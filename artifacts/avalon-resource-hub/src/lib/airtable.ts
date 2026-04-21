@@ -24,6 +24,7 @@ export interface Resource {
   approvedByAvalon: boolean;
   notes: string;
   removed: boolean;
+  legacyRemoved: boolean;
   logo?: string;
 }
 
@@ -97,6 +98,7 @@ function parseRecord(record: Record<string, unknown>): Resource {
     approvedByAvalon: !!(fields["Approved by Avalon Admin"] || fields["Approved by Avalon Adm..."]),
     notes,
     removed,
+    legacyRemoved: removedByLegacy,
     logo,
   };
 }
@@ -172,14 +174,12 @@ export async function removeResource(resource: Resource): Promise<void> {
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
   // Set the "Removed by Avalon" checkbox to true.
-  // Also clean up any legacy [REMOVED] prefix in NOTES while we're here.
+  // resource.notes is already the clean version (prefix stripped by parseRecord),
+  // so always write the clean notes back to clear any lingering legacy prefix.
   const patchFields: Record<string, unknown> = {
     "Removed by Avalon": true,
+    "NOTES": resource.notes,
   };
-  // If notes still has a legacy prefix, strip it now that we have the proper column
-  if (resource.notes.startsWith(LEGACY_REMOVED_PREFIX)) {
-    patchFields["NOTES"] = resource.notes.slice(LEGACY_REMOVED_PREFIX.length);
-  }
 
   const response = await fetch(url, {
     method: "PATCH",
@@ -191,7 +191,8 @@ export async function removeResource(resource: Resource): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to remove resource: ${response.status} ${response.statusText}`);
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Failed to remove resource: ${response.status} ${detail || response.statusText}`);
   }
 
   clearCache();
@@ -201,13 +202,13 @@ export async function restoreResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
-  // Uncheck "Removed by Avalon" and clean up any legacy prefix in notes
+  // Airtable requires null (not false) to uncheck a checkbox field.
+  // resource.notes is already clean (prefix stripped), so write it back
+  // to also clear any lingering legacy [REMOVED] prefix from NOTES.
   const patchFields: Record<string, unknown> = {
-    "Removed by Avalon": false,
+    "Removed by Avalon": null,
+    "NOTES": resource.notes,
   };
-  if (resource.notes.startsWith(LEGACY_REMOVED_PREFIX)) {
-    patchFields["NOTES"] = resource.notes.slice(LEGACY_REMOVED_PREFIX.length);
-  }
 
   const response = await fetch(url, {
     method: "PATCH",
@@ -219,7 +220,8 @@ export async function restoreResource(resource: Resource): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to restore resource: ${response.status} ${response.statusText}`);
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Failed to restore resource: ${response.status} ${detail || response.statusText}`);
   }
 
   clearCache();
