@@ -1,17 +1,19 @@
 import { QuickExit } from "./QuickExit";
-import avalonLogo from "@assets/AVALON_Full_Logo_1_(1)_1776800978300.jpg";
 
 interface HeaderProps {
   showStaffLink?: boolean;
 }
 
 export function Header({ showStaffLink = true }: HeaderProps) {
+  const base = import.meta.env.BASE_URL || "/";
+  const logoPath = `${base}avalon-logo.jpg`.replace(/\/\//g, "/");
+
   return (
     <header className="app-header">
       <div className="header-inner">
         <div className="header-left">
           <a href="https://avalonusa.org" target="_blank" rel="noopener noreferrer" className="header-logo-link">
-            <img src={avalonLogo} alt="Avalon Healing Center" className="header-logo" />
+            <img src={logoPath} alt="Avalon Healing Center" className="header-logo" />
           </a>
           <div className="header-title-group">
             <h1 className="header-title">Resource Hub</h1>
@@ -20,7 +22,7 @@ export function Header({ showStaffLink = true }: HeaderProps) {
         </div>
         <div className="header-right">
           {showStaffLink && (
-            <a href="/staff" className="staff-link">
+            <a href="#/staff" className="staff-link">
               Staff Access
             </a>
           )}

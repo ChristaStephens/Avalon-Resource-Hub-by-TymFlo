@@ -27,8 +27,13 @@ externalPort = 80
 localPort = 8081
 externalPort = 8081
 
+[[ports]]
+localPort = 22714
+externalPort = 3000
+
 [userenv]
 
 [userenv.shared]
 VITE_AIRTABLE_BASE_ID = "appR2hVGSWgSob12"
 VITE_AIRTABLE_TABLE_ID = "tblDowngy9UNJQhYc"
+VITE_STAFF_PASSWORD = "avalon2024"
