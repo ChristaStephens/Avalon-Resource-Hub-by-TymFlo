@@ -1,23 +1,27 @@
-import { Switch, Route } from "wouter";
+import { Router, Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import PublicHub from "@/pages/PublicHub";
 import StaffArea from "@/pages/StaffArea";
 import NotFound from "@/pages/not-found";
 
-function Router() {
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+function AppRouter() {
   return (
-    <Switch>
-      <Route path="/" component={PublicHub} />
-      <Route path="/staff" component={StaffArea} />
-      <Route component={NotFound} />
-    </Switch>
+    <Router base={base}>
+      <Switch>
+        <Route path="/" component={PublicHub} />
+        <Route path="/staff" component={StaffArea} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
   );
 }
 
 function App() {
   return (
     <>
-      <Router />
+      <AppRouter />
       <Toaster />
     </>
   );
