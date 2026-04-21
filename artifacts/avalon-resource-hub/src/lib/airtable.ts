@@ -75,10 +75,10 @@ function parseRecord(record: Record<string, unknown>): Resource {
     website: String(fields["Website"] || ""),
     primaryContactEmail: String(fields["Primary Contact Email"] || ""),
     secondaryContactEmail: String(fields["Secondary Contact Email"] || ""),
-    costs: String(fields["Costs"] || ""),
+    costs: String(fields["Costs "] || fields["Costs"] || ""),
     uninsured: String(fields["Uninsured"] || ""),
     supportOptions,
-    approvedByAvalon: !!fields["Approved by Avalon Adm..."],
+    approvedByAvalon: !!(fields["Approved by Avalon Admin"] || fields["Approved by Avalon Adm..."]),
     notes: String(fields["NOTES"] || ""),
     logo,
   };
