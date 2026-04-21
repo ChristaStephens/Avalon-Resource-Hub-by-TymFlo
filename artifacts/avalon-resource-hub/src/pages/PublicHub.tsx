@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { fetchResources, Resource, AIRTABLE_CONFIGURED, clearCache } from "@/lib/airtable";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { ResourceCard } from "@/components/ResourceCard";
 import { SearchFilter } from "@/components/SearchFilter";
 
@@ -87,13 +88,6 @@ export default function PublicHub() {
   return (
     <div className="page-wrapper">
       <Header />
-      <div className="hero-banner">
-        <div className="hero-inner">
-          <p className="hero-tagline">
-            Find the support you need — confidential, free to search, no login required.
-          </p>
-        </div>
-      </div>
 
       <main className="main-content">
         <SearchFilter
@@ -151,6 +145,7 @@ export default function PublicHub() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

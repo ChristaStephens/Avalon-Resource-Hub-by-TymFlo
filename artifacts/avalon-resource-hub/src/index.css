@@ -105,10 +105,13 @@ a:hover { text-decoration: underline; }
 }
 .staff-link {
   font-size: 13px;
+  font-family: var(--font-main);
   color: var(--avalon-warm-gray);
   padding: 6px 10px;
   border: 1px solid var(--avalon-light-gray);
   border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
   transition: all 0.15s;
 }
 .staff-link:hover {
@@ -619,6 +622,45 @@ a:hover { text-decoration: underline; }
 .submit-btn:hover:not(:disabled) { background: var(--avalon-teal-dark); }
 .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+/* ===== FOOTER ===== */
+.site-footer {
+  background: var(--avalon-white);
+  border-top: 1px solid var(--avalon-light-gray);
+  padding: 20px 24px;
+  margin-top: auto;
+}
+.site-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.site-footer-license {
+  font-size: 12px;
+  color: var(--avalon-warm-gray);
+}
+.site-footer-powered {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--avalon-warm-gray);
+}
+.site-footer-powered a {
+  display: flex;
+  align-items: center;
+}
+.tymflo-logo {
+  height: 22px;
+  width: auto;
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+.tymflo-logo:hover { opacity: 1; }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
   .header-inner { padding: 10px 16px; }
@@ -627,11 +669,10 @@ a:hover { text-decoration: underline; }
   .header-subtitle { display: none; }
   .back-to-avalon { display: none; }
   .staff-link { display: none; }
-  .hero-banner { padding: 20px 16px; }
-  .hero-tagline { font-size: 14px; }
   .main-content { padding: 16px 16px 40px; }
   .resources-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .staff-login-card { padding: 32px 24px; margin: 40px auto; }
   .filter-row { gap: 8px; }
+  .site-footer-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
 }

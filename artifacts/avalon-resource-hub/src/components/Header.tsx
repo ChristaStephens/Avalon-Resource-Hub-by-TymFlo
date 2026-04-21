@@ -1,3 +1,4 @@
+import { useLocation } from "wouter";
 import { QuickExit } from "./QuickExit";
 
 interface HeaderProps {
@@ -7,6 +8,7 @@ interface HeaderProps {
 export function Header({ showStaffLink = true }: HeaderProps) {
   const base = import.meta.env.BASE_URL || "/";
   const logoPath = `${base}avalon-logo.jpg`.replace(/\/\//g, "/");
+  const [, navigate] = useLocation();
 
   return (
     <header className="app-header">
@@ -22,9 +24,9 @@ export function Header({ showStaffLink = true }: HeaderProps) {
         </div>
         <div className="header-right">
           {showStaffLink && (
-            <a href="#/staff" className="staff-link">
+            <button onClick={() => navigate("/staff")} className="staff-link">
               Staff Access
-            </a>
+            </button>
           )}
           <a
             href="https://avalonusa.org"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { createResource, clearCache, AIRTABLE_CONFIGURED } from "@/lib/airtable";
 
 const STAFF_PASSWORD = import.meta.env.VITE_STAFF_PASSWORD || "avalon2024";
@@ -125,7 +126,7 @@ export default function StaffArea() {
               {passwordError && <p className="login-error">{passwordError}</p>}
               <button type="submit" className="login-btn">Access Staff Area</button>
             </form>
-            <a href="#/" className="back-link">← Back to Resource Hub</a>
+            <a href="/" className="back-link">← Back to Resource Hub</a>
           </div>
         </main>
       </div>
@@ -154,7 +155,7 @@ export default function StaffArea() {
           <div className="staff-header">
             <h2>Add New Resource</h2>
             <p>Fill in the details below to add a new organization to the resource hub. Fields marked * are required.</p>
-            <a href="#/" className="back-link">← View Public Hub</a>
+            <a href="/" className="back-link">← View Public Hub</a>
           </div>
 
           {submitSuccess && (
@@ -316,6 +317,7 @@ export default function StaffArea() {
           </form>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
