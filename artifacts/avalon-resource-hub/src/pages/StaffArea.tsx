@@ -9,19 +9,27 @@ const SUPPORT_OPTIONS = [
   "STI Testing",
   "HIV Testing",
   "Pregnancy Tests",
-  "Pregnancy Confirmation",
-  "Pregnancy Support",
+  "Pregnancy Confirmations",
+  "Contraception",
+  "Ultrasounds",
+  "Live Birth",
   "Grief/Loss",
   "Undocumented",
+  "Termination",
+  "Chronic Care",
+  "Dental",
+  "Behavioral",
+  "Uninsured",
+  "Transporation",
 ];
 
 const COST_OPTIONS = [
-  "Free - No costs",
-  "Free prenatal care; insurance billed",
+  "Free - No costs ",
+  "Free prenatal care; insurance billed for well person gyn ",
   "Insurance based",
-  "Will help with insurance...",
-  "Offers - Free prenatals",
-  "Based on EGA - Financial Assistance",
+  "Will help with insurance sign up",
+  "Offers - Free prenatals ",
+  "Based on EGA - Financial Assistance Available",
 ];
 
 export default function StaffArea() {
@@ -71,18 +79,22 @@ export default function StaffArea() {
     setSubmitError(null);
 
     try {
-      await createResource({
+      const payload: Record<string, unknown> = {
         Organization: form.organization,
-        Contact: form.contact,
-        Website: form.website,
-        "Primary Contact Email": form.primaryEmail,
-        "Secondary Contact Email": form.secondaryEmail,
-        Costs: form.costs,
+        "Support Options": form.supportOptions.length ? form.supportOptions : undefined,
+        "Costs ": form.costs || undefined,
         Uninsured: form.uninsured || undefined,
-        "Support Options": form.supportOptions,
-        NOTES: form.notes,
-        "Approved by Avalon Adm...": form.approvedByAvalon,
-      });
+        NOTES: form.notes || undefined,
+        "Approved by Avalon Admin": form.approvedByAvalon || undefined,
+      };
+      if (form.contact) payload["Contact"] = form.contact;
+      if (form.website) payload["Website"] = form.website;
+      if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
+      if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
+
+      Object.keys(payload).forEach((k) => payload[k] === undefined && delete payload[k]);
+
+      await createResource(payload);
 
       setSubmitSuccess(true);
       clearCache();
