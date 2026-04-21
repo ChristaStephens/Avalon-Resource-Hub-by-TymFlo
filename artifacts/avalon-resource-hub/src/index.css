@@ -78,6 +78,17 @@ a:hover { text-decoration: underline; }
   gap: 14px;
 }
 .header-logo-link { display: flex; align-items: center; }
+.header-logo-btn {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s;
+}
+.header-logo-btn:hover { opacity: 0.8; }
 .header-logo {
   height: 52px;
   width: auto;
