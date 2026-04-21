@@ -259,15 +259,23 @@ a:hover { text-decoration: underline; }
 }
 .hero-search-clear:hover { color: var(--avalon-charcoal); }
 
+.hero-filter-divider {
+  border: none;
+  border-top: 1px solid var(--avalon-light-gray);
+  margin: 0;
+  width: 100%;
+}
+
 .hero-filter-row {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  padding-top: 4px;
 }
 .hero-filter-select {
-  padding: 8px 14px;
+  padding: 8px 32px 8px 14px;
   border: 1.5px solid var(--avalon-light-gray);
   border-radius: 50px;
   font-family: var(--font-main);
@@ -277,6 +285,8 @@ a:hover { text-decoration: underline; }
   cursor: pointer;
   outline: none;
   transition: border-color 0.15s;
+  max-width: 200px;
+  appearance: auto;
 }
 .hero-filter-select:focus { border-color: var(--avalon-teal); }
 

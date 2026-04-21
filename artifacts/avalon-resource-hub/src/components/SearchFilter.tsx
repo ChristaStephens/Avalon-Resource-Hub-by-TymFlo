@@ -67,6 +67,8 @@ export function SearchFilter({
           </div>
         </div>
 
+        <hr className="hero-filter-divider" />
+
         <div className="hero-filter-row">
           <select
             value={selectedSupport}
