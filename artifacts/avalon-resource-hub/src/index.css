@@ -229,7 +229,7 @@ a:hover { text-decoration: underline; }
 .hero-search-input {
   width: 100%;
   padding: 18px 50px 18px 52px;
-  border: 2px solid var(--avalon-light-gray);
+  border: 2px solid #c4bfba;
   border-radius: 50px;
   font-family: var(--font-main);
   font-size: 16px;
@@ -237,12 +237,12 @@ a:hover { text-decoration: underline; }
   background: white;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  box-shadow: 0 3px 14px rgba(0,0,0,0.10);
 }
-.hero-search-input::placeholder { color: var(--avalon-warm-gray); }
+.hero-search-input::placeholder { color: #b0a89f; }
 .hero-search-input:focus {
   border-color: var(--avalon-teal);
-  box-shadow: 0 4px 24px rgba(0,114,103,0.13);
+  box-shadow: 0 4px 20px rgba(0,114,103,0.18);
 }
 .hero-search-clear {
   position: absolute;
@@ -261,7 +261,7 @@ a:hover { text-decoration: underline; }
 
 .hero-filter-divider {
   border: none;
-  border-top: 1px solid var(--avalon-light-gray);
+  border-top: 1.5px solid #d5cfc9;
   margin: 0;
   width: 100%;
 }
@@ -276,7 +276,7 @@ a:hover { text-decoration: underline; }
 }
 .hero-filter-select {
   padding: 8px 32px 8px 14px;
-  border: 1.5px solid var(--avalon-light-gray);
+  border: 1.5px solid #c4bfba;
   border-radius: 50px;
   font-family: var(--font-main);
   font-size: 13px;
@@ -299,7 +299,7 @@ a:hover { text-decoration: underline; }
   color: var(--avalon-charcoal);
   user-select: none;
   padding: 7px 14px;
-  border: 1.5px solid var(--avalon-light-gray);
+  border: 1.5px solid #c4bfba;
   border-radius: 50px;
   transition: border-color 0.15s;
 }
