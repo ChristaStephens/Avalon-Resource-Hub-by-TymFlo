@@ -5,7 +5,9 @@ const PAT = import.meta.env.VITE_AIRTABLE_PAT || "";
 export const AIRTABLE_CONFIGURED = !!(BASE_ID && PAT);
 
 const CACHE_KEY = "avalon_resources_cache";
+const CACHE_ALL_KEY = "avalon_resources_all_cache";
 const CACHE_TTL = 60 * 60 * 1000;
+const REMOVED_PREFIX = "[REMOVED] ";
 
 export interface Resource {
   id: string;
@@ -19,6 +21,7 @@ export interface Resource {
   supportOptions: string[];
   approvedByAvalon: boolean;
   notes: string;
+  removed: boolean;
   logo?: string;
 }
 
@@ -27,13 +30,13 @@ interface CacheEntry {
   data: Resource[];
 }
 
-function getCache(): Resource[] | null {
+function getCache(key: string): Resource[] | null {
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return null;
     const entry: CacheEntry = JSON.parse(raw);
     if (Date.now() - entry.timestamp > CACHE_TTL) {
-      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem(key);
       return null;
     }
     return entry.data;
@@ -42,16 +45,16 @@ function getCache(): Resource[] | null {
   }
 }
 
-function setCache(data: Resource[]) {
+function setCache(key: string, data: Resource[]) {
   try {
     const entry: CacheEntry = { timestamp: Date.now(), data };
-    localStorage.setItem(CACHE_KEY, JSON.stringify(entry));
-  } catch {
-  }
+    localStorage.setItem(key, JSON.stringify(entry));
+  } catch {}
 }
 
 export function clearCache() {
   localStorage.removeItem(CACHE_KEY);
+  localStorage.removeItem(CACHE_ALL_KEY);
 }
 
 function parseRecord(record: Record<string, unknown>): Resource {
@@ -68,6 +71,10 @@ function parseRecord(record: Record<string, unknown>): Resource {
   const attachments = fields["Logo"] as Array<{ url: string }> | undefined;
   const logo = attachments?.[0]?.url;
 
+  const rawNotes = String(fields["NOTES"] || "");
+  const removed = rawNotes.startsWith(REMOVED_PREFIX);
+  const notes = removed ? rawNotes.slice(REMOVED_PREFIX.length) : rawNotes;
+
   return {
     id: record.id as string,
     organization: String(fields["Organization"] || ""),
@@ -79,46 +86,56 @@ function parseRecord(record: Record<string, unknown>): Resource {
     uninsured: String(fields["Uninsured"] || ""),
     supportOptions,
     approvedByAvalon: !!(fields["Approved by Avalon Admin"] || fields["Approved by Avalon Adm..."]),
-    notes: String(fields["NOTES"] || ""),
+    notes,
+    removed,
     logo,
   };
 }
 
-export async function fetchResources(forceRefresh = false): Promise<Resource[]> {
-  if (!forceRefresh) {
-    const cached = getCache();
-    if (cached) return cached;
-  }
-
-  if (!BASE_ID || !PAT) {
-    return [];
-  }
+async function fetchAll(): Promise<Resource[]> {
+  if (!BASE_ID || !PAT) return [];
 
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?pageSize=100`;
-
   const allRecords: Resource[] = [];
   let offset: string | undefined;
 
   do {
     const fetchUrl = offset ? `${url}&offset=${offset}` : url;
     const response = await fetch(fetchUrl, {
-      headers: {
-        Authorization: `Bearer ${PAT}`,
-      },
+      headers: { Authorization: `Bearer ${PAT}` },
     });
-
     if (!response.ok) {
       throw new Error(`Airtable API error: ${response.status} ${response.statusText}`);
     }
-
     const data = await response.json() as { records: Record<string, unknown>[]; offset?: string };
-    const records = data.records.map(parseRecord);
-    allRecords.push(...records);
+    allRecords.push(...data.records.map(parseRecord));
     offset = data.offset;
   } while (offset);
 
-  setCache(allRecords);
   return allRecords;
+}
+
+export async function fetchResources(forceRefresh = false): Promise<Resource[]> {
+  if (!forceRefresh) {
+    const cached = getCache(CACHE_KEY);
+    if (cached) return cached;
+  }
+
+  const all = await fetchAll();
+  const active = all.filter((r) => !r.removed);
+  setCache(CACHE_KEY, active);
+  return active;
+}
+
+export async function fetchAllResources(forceRefresh = false): Promise<Resource[]> {
+  if (!forceRefresh) {
+    const cached = getCache(CACHE_ALL_KEY);
+    if (cached) return cached;
+  }
+
+  const all = await fetchAll();
+  setCache(CACHE_ALL_KEY, all);
+  return all;
 }
 
 export async function createResource(fields: Record<string, unknown>): Promise<void> {
@@ -136,6 +153,48 @@ export async function createResource(fields: Record<string, unknown>): Promise<v
 
   if (!response.ok) {
     throw new Error(`Failed to create record: ${response.status} ${response.statusText}`);
+  }
+
+  clearCache();
+}
+
+export async function removeResource(resource: Resource): Promise<void> {
+  const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
+
+  const newNotes = REMOVED_PREFIX + resource.notes;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${writePAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fields: { NOTES: newNotes } }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to remove resource: ${response.status} ${response.statusText}`);
+  }
+
+  clearCache();
+}
+
+export async function restoreResource(resource: Resource): Promise<void> {
+  const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${writePAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fields: { NOTES: resource.notes } }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to restore resource: ${response.status} ${response.statusText}`);
   }
 
   clearCache();
