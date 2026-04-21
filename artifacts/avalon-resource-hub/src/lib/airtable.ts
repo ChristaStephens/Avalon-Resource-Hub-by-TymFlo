@@ -7,7 +7,9 @@ export const AIRTABLE_CONFIGURED = !!(BASE_ID && PAT);
 const CACHE_KEY = "avalon_resources_cache";
 const CACHE_ALL_KEY = "avalon_resources_all_cache";
 const CACHE_TTL = 60 * 60 * 1000;
-const REMOVED_PREFIX = "[REMOVED] ";
+
+// Legacy prefix used before the dedicated checkbox column existed
+const LEGACY_REMOVED_PREFIX = "[REMOVED] ";
 
 export interface Resource {
   id: string;
@@ -72,8 +74,15 @@ function parseRecord(record: Record<string, unknown>): Resource {
   const logo = attachments?.[0]?.url;
 
   const rawNotes = String(fields["NOTES"] || "");
-  const removed = rawNotes.startsWith(REMOVED_PREFIX);
-  const notes = removed ? rawNotes.slice(REMOVED_PREFIX.length) : rawNotes;
+
+  // Primary: dedicated "Removed by Avalon" checkbox column
+  // Fallback: legacy [REMOVED] prefix in notes (for backward compatibility)
+  const removedByCheckbox = !!fields["Removed by Avalon"];
+  const removedByLegacy = rawNotes.startsWith(LEGACY_REMOVED_PREFIX);
+  const removed = removedByCheckbox || removedByLegacy;
+
+  // Strip legacy prefix from displayed notes
+  const notes = removedByLegacy ? rawNotes.slice(LEGACY_REMOVED_PREFIX.length) : rawNotes;
 
   return {
     id: record.id as string,
@@ -162,7 +171,15 @@ export async function removeResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
-  const newNotes = REMOVED_PREFIX + resource.notes;
+  // Set the "Removed by Avalon" checkbox to true.
+  // Also clean up any legacy [REMOVED] prefix in NOTES while we're here.
+  const patchFields: Record<string, unknown> = {
+    "Removed by Avalon": true,
+  };
+  // If notes still has a legacy prefix, strip it now that we have the proper column
+  if (resource.notes.startsWith(LEGACY_REMOVED_PREFIX)) {
+    patchFields["NOTES"] = resource.notes.slice(LEGACY_REMOVED_PREFIX.length);
+  }
 
   const response = await fetch(url, {
     method: "PATCH",
@@ -170,7 +187,7 @@ export async function removeResource(resource: Resource): Promise<void> {
       Authorization: `Bearer ${writePAT}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ fields: { NOTES: newNotes } }),
+    body: JSON.stringify({ fields: patchFields }),
   });
 
   if (!response.ok) {
@@ -184,13 +201,21 @@ export async function restoreResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
+  // Uncheck "Removed by Avalon" and clean up any legacy prefix in notes
+  const patchFields: Record<string, unknown> = {
+    "Removed by Avalon": false,
+  };
+  if (resource.notes.startsWith(LEGACY_REMOVED_PREFIX)) {
+    patchFields["NOTES"] = resource.notes.slice(LEGACY_REMOVED_PREFIX.length);
+  }
+
   const response = await fetch(url, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${writePAT}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ fields: { NOTES: resource.notes } }),
+    body: JSON.stringify({ fields: patchFields }),
   });
 
   if (!response.ok) {
