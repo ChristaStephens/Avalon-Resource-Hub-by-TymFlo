@@ -9,6 +9,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // GitHub Pages SPA routing: restores the path encoded by 404.html
+      (function () {
+        var l = window.location;
+        if (l.search[1] === "/") {
+          var parts = l.search.slice(1).split("&");
+          var path = parts[0].replace(/~and~/g, "&");
+          var query = parts[1] ? "?" + parts[1].replace(/~and~/g, "&") : "";
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + path + query + l.hash
+          );
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
