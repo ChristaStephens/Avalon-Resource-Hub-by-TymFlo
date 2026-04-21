@@ -40,7 +40,7 @@ export function SearchFilter({
     <div className="hero-search-section">
       <div className="hero-search-inner">
         <div className="hero-text">
-          <h2 className="hero-heading">Find the support you deserve.</h2>
+          <h2 className="hero-heading">Find the support you need.</h2>
           <p className="hero-subtext">
             A safe, confidential space to explore local resources — free to search anytime,
             no account required. You set the pace.
