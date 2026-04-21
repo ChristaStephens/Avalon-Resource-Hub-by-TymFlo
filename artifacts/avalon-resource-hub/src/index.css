@@ -908,9 +908,19 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   flex-wrap: wrap;
 }
+.site-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
 .site-footer-license {
   font-size: 12px;
   color: var(--avalon-warm-gray);
+}
+.site-footer-copyright {
+  font-size: 11px;
+  color: var(--avalon-warm-gray);
+  opacity: 0.75;
 }
 .site-footer-powered {
   display: flex;
