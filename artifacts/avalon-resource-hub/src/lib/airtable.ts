@@ -76,9 +76,9 @@ function parseRecord(record: Record<string, unknown>): Resource {
 
   const rawNotes = String(fields["NOTES"] || "");
 
-  // Primary: dedicated "Removed by Avalon" checkbox column
+  // Primary: dedicated "Removed by Avalon Admin" checkbox column
   // Fallback: legacy [REMOVED] prefix in notes (for backward compatibility)
-  const removedByCheckbox = !!fields["Removed by Avalon"];
+  const removedByCheckbox = !!fields["Removed by Avalon Admin"];
   const removedByLegacy = rawNotes.startsWith(LEGACY_REMOVED_PREFIX);
   const removed = removedByCheckbox || removedByLegacy;
 
@@ -173,11 +173,10 @@ export async function removeResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
-  // Set the "Removed by Avalon" checkbox to true.
-  // resource.notes is already the clean version (prefix stripped by parseRecord),
-  // so always write the clean notes back to clear any lingering legacy prefix.
+  // Check the "Removed by Avalon Admin" checkbox and write clean notes
+  // (stripping any legacy [REMOVED] prefix while we're here).
   const patchFields: Record<string, unknown> = {
-    "Removed by Avalon": true,
+    "Removed by Avalon Admin": true,
     "NOTES": resource.notes,
   };
 
@@ -202,11 +201,10 @@ export async function restoreResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
 
-  // Airtable requires null (not false) to uncheck a checkbox field.
-  // resource.notes is already clean (prefix stripped), so write it back
-  // to also clear any lingering legacy [REMOVED] prefix from NOTES.
+  // Uncheck "Removed by Avalon Admin" (null = unchecked in Airtable API)
+  // and write back clean notes to strip any legacy [REMOVED] prefix.
   const patchFields: Record<string, unknown> = {
-    "Removed by Avalon": null,
+    "Removed by Avalon Admin": null,
     "NOTES": resource.notes,
   };
 

@@ -111,24 +111,49 @@ export default function StaffArea() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setSubmitError(null);
+
+    // Client-side required field validation
+    if (!form.organization.trim()) {
+      setSubmitError("Organization Name is required.");
+      return;
+    }
+    if (!form.website.trim()) {
+      setSubmitError("Website URL is required.");
+      return;
+    }
+    if (!form.primaryEmail.trim()) {
+      setSubmitError("Primary Contact Email is required.");
+      return;
+    }
+    if (!form.costs) {
+      setSubmitError("Cost Structure is required.");
+      return;
+    }
+    if (form.supportOptions.length === 0) {
+      setSubmitError("Please select at least one Support Option.");
+      return;
+    }
+    if (!form.approvedByAvalon) {
+      setSubmitError("Please confirm the organization is Approved by Avalon before adding it.");
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
       const payload: Record<string, unknown> = {
         Organization: form.organization,
-        "Support Options": form.supportOptions.length ? form.supportOptions : undefined,
-        "Costs ": form.costs || undefined,
-        Uninsured: form.uninsured || undefined,
-        NOTES: form.notes || undefined,
-        "Approved by Avalon Admin": form.approvedByAvalon || undefined,
+        "Support Options": form.supportOptions,
+        "Costs ": form.costs,
+        "Approved by Avalon Admin": true,
       };
       if (form.contact) payload["Contact"] = form.contact;
       if (form.website) payload["Website"] = form.website;
       if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
       if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
-
-      Object.keys(payload).forEach((k) => payload[k] === undefined && delete payload[k]);
+      if (form.uninsured) payload["Uninsured"] = form.uninsured;
+      if (form.notes) payload["NOTES"] = form.notes;
 
       await createResource(payload);
       setSubmitSuccess(true);
@@ -268,7 +293,7 @@ export default function StaffArea() {
                   <h3>Organization Info</h3>
                   <div className="form-grid">
                     <div className="form-field">
-                      <label htmlFor="org">Organization Name *</label>
+                      <label htmlFor="org">Organization Name <span className="required-star">*</span></label>
                       <input
                         id="org"
                         type="text"
@@ -291,7 +316,7 @@ export default function StaffArea() {
                       />
                     </div>
                     <div className="form-field">
-                      <label htmlFor="website">Website URL</label>
+                      <label htmlFor="website">Website URL <span className="required-star">*</span></label>
                       <input
                         id="website"
                         type="url"
@@ -302,7 +327,7 @@ export default function StaffArea() {
                       />
                     </div>
                     <div className="form-field">
-                      <label htmlFor="primaryEmail">Primary Contact Email</label>
+                      <label htmlFor="primaryEmail">Primary Contact Email <span className="required-star">*</span></label>
                       <input
                         id="primaryEmail"
                         type="email"
@@ -330,7 +355,7 @@ export default function StaffArea() {
                   <h3>Services & Cost</h3>
                   <div className="form-grid">
                     <div className="form-field">
-                      <label htmlFor="costs">Cost Structure</label>
+                      <label htmlFor="costs">Cost Structure <span className="required-star">*</span></label>
                       <select
                         id="costs"
                         value={form.costs}
@@ -358,7 +383,7 @@ export default function StaffArea() {
                   </div>
 
                   <div className="form-field full-width">
-                    <label>Support Options (select all that apply)</label>
+                    <label>Support Options <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
                     <div className="support-checkboxes">
                       {SUPPORT_OPTIONS.map((opt) => (
                         <label key={opt} className="checkbox-label">
@@ -394,7 +419,7 @@ export default function StaffArea() {
                         checked={form.approvedByAvalon}
                         onChange={(e) => setForm((f) => ({ ...f, approvedByAvalon: e.target.checked }))}
                       />
-                      <span>Approved by Avalon</span>
+                      <span>Approved by Avalon <span className="required-star">*</span></span>
                     </label>
                   </div>
                 </div>

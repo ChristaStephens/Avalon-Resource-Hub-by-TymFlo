@@ -815,6 +815,17 @@ a:hover { text-decoration: underline; }
   color: var(--avalon-charcoal);
   letter-spacing: 0.02em;
 }
+.required-star {
+  color: #c0392b;
+  font-weight: 700;
+  margin-left: 2px;
+}
+.label-hint {
+  font-weight: 400;
+  color: var(--avalon-warm-gray);
+  font-size: 12px;
+  margin-left: 4px;
+}
 .form-input, .form-textarea {
   padding: 10px 14px;
   border: 2px solid var(--avalon-light-gray);
