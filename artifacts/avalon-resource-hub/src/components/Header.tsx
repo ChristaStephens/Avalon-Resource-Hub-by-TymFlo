@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ showStaffLink = true }: HeaderProps) {
   const base = import.meta.env.BASE_URL || "/";
-  const logoPath = `${base}avalon-logo-cropped.jpg`.replace(/\/\//g, "/");
+  const logoPath = `${base}avalon-logo.jpg`.replace(/\/\//g, "/");
   const [, navigate] = useLocation();
 
   return (

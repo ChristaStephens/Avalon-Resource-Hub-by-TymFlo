@@ -89,22 +89,22 @@ export default function PublicHub() {
     <div className="page-wrapper">
       <Header />
 
-      <main className="main-content">
-        <SearchFilter
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedSupport={selectedSupport}
-          onSupportChange={setSelectedSupport}
-          selectedCost={selectedCost}
-          onCostChange={setSelectedCost}
-          uninsuredOnly={uninsuredOnly}
-          onUninsuredChange={setUninsuredOnly}
-          supportOptions={supportOptions}
-          costOptions={costOptions}
-          totalCount={resources.length}
-          filteredCount={filtered.length}
-        />
+      <SearchFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        selectedSupport={selectedSupport}
+        onSupportChange={setSelectedSupport}
+        selectedCost={selectedCost}
+        onCostChange={setSelectedCost}
+        uninsuredOnly={uninsuredOnly}
+        onUninsuredChange={setUninsuredOnly}
+        supportOptions={supportOptions}
+        costOptions={costOptions}
+        totalCount={resources.length}
+        filteredCount={filtered.length}
+      />
 
+      <main className="main-content">
         {loading && (
           <div className="loading-state">
             <div className="spinner" />
