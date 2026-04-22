@@ -51,7 +51,7 @@ jobs:
       - name: Copy video into resource hub public folder
         run: |
           mkdir -p artifacts/avalon-resource-hub/public/walkthrough
-          cp -r artifacts/avalon-walkthrough-video/dist/public/* artifacts/avalon-resource-hub/public/walkthrough/
+          cp -a artifacts/avalon-walkthrough-video/dist/public/. artifacts/avalon-resource-hub/public/walkthrough/
 
       - name: Build
         run: pnpm --filter @workspace/avalon-resource-hub run build:gh-pages
