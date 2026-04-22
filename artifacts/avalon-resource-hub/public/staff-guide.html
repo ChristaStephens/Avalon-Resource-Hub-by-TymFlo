@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Guide — Avalon Resource Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f7f5f3; color: #2d2d2d; line-height: 1.6; }
+
+    /* Cover */
+    .cover {
+      background: linear-gradient(135deg, #1a7a72 0%, #0f5c55 100%);
+      color: white;
+      padding: 64px 40px;
+      text-align: center;
+    }
+    .cover-logo { font-size: 13px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.75; margin-bottom: 16px; }
+    .cover h1 { font-size: 38px; font-weight: 700; margin-bottom: 12px; }
+    .cover-sub { font-size: 18px; opacity: 0.85; margin-bottom: 32px; }
+    .cover-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); border-radius: 20px; padding: 6px 18px; font-size: 13px; font-weight: 500; }
+
+    /* Layout */
+    .page { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* TOC */
+    .toc { background: white; border-radius: 12px; padding: 28px 32px; margin-bottom: 40px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .toc h2 { font-size: 16px; font-weight: 700; color: #1a7a72; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 8px; }
+    .toc a { color: #1a7a72; text-decoration: none; font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+
+    /* Sections */
+    .section { background: white; border-radius: 12px; padding: 36px 40px; margin-bottom: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .section-num { display: inline-block; background: #1a7a72; color: white; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-size: 15px; font-weight: 700; margin-right: 10px; vertical-align: middle; }
+    .section h2 { font-size: 22px; font-weight: 700; color: #1a7a72; margin-bottom: 20px; display: flex; align-items: center; }
+    .section h3 { font-size: 16px; font-weight: 600; color: #2d2d2d; margin: 24px 0 10px; }
+    .section p { color: #4a4a4a; margin-bottom: 12px; }
+
+    /* Steps */
+    .steps { list-style: none; padding: 0; counter-reset: step; }
+    .steps li { counter-increment: step; display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+    .steps li::before { content: counter(step); min-width: 28px; height: 28px; background: #e8f5f3; color: #1a7a72; border-radius: 50%; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .steps li p { color: #4a4a4a; margin: 0; }
+    .steps li strong { color: #2d2d2d; }
+
+    /* Tips */
+    .tip-box { background: #e8f5f3; border-left: 4px solid #1a7a72; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; }
+    .tip-box strong { color: #1a7a72; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tip-box p { color: #2d5a56; margin: 0; font-size: 14px; }
+
+    .warning-box { background: #fff8e1; border-left: 4px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0; }
+    .warning-box strong { color: #92400e; display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .warning-box p { color: #78350f; margin: 0; font-size: 14px; }
+
+    /* Screenshots */
+    .screenshot-wrap { margin: 24px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.12); border: 1px solid #e4e0dc; }
+    .screenshot-wrap img { width: 100%; display: block; }
+    .screenshot-caption { background: #f0ede9; padding: 8px 14px; font-size: 12px; color: #7a7470; font-style: italic; }
+
+    /* Field list */
+    .field-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+    .field-table th { background: #1a7a72; color: white; padding: 10px 14px; text-align: left; font-weight: 600; }
+    .field-table td { padding: 10px 14px; border-bottom: 1px solid #ede9e5; vertical-align: top; }
+    .field-table tr:nth-child(even) td { background: #f7f5f3; }
+    .required { color: #dc2626; font-weight: 700; }
+    .optional { color: #6b7280; font-size: 12px; }
+
+    /* Tags */
+    .tag { display: inline-block; background: #e8f5f3; color: #1a7a72; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: 500; margin: 2px 2px; }
+
+    /* Quick ref */
+    .quick-ref { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .quick-ref-card { background: #f7f5f3; border: 1px solid #e4e0dc; border-radius: 8px; padding: 16px; }
+    .quick-ref-card h4 { font-size: 14px; font-weight: 600; color: #1a7a72; margin-bottom: 8px; }
+    .quick-ref-card p { font-size: 13px; color: #4a4a4a; margin: 0; }
+
+    /* Footer */
+    .guide-footer { text-align: center; color: #9a9490; font-size: 12px; margin-top: 40px; padding-top: 24px; border-top: 1px solid #e4e0dc; }
+
+    @media (max-width: 640px) {
+      .cover { padding: 40px 20px; }
+      .cover h1 { font-size: 26px; }
+      .section { padding: 24px 20px; }
+      .quick-ref { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: white; }
+      .section, .toc { box-shadow: none; border: 1px solid #e4e0dc; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-logo">Avalon Healing Center</div>
+  <h1>Resource Hub<br>Staff Guide</h1>
+  <p class="cover-sub">How to manage the community resource directory</p>
+  <span class="cover-badge">For Authorized Staff Only</span>
+</div>
+
+<div class="page">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1">Overview — What Is the Resource Hub?</a></li>
+      <li><a href="#s2">The Public View — What Clients See</a></li>
+      <li><a href="#s3">Logging In to the Staff Area</a></li>
+      <li><a href="#s4">Adding a New Organization</a></li>
+      <li><a href="#s5">Removing or Restoring an Organization</a></li>
+      <li><a href="#s6">Quick Reference &amp; Tips</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <h2><span class="section-num">1</span> Overview — What Is the Resource Hub?</h2>
+    <p>The <strong>Avalon Resource Hub</strong> is a community directory that helps survivors find local health and support organizations. It lives at:</p>
+    <div class="tip-box">
+      <strong>Live website address</strong>
+      <p><a href="https://christastephens.github.io/Avalon-Resource-Hub-by-TymFlo/" target="_blank" style="color:#1a7a72; font-weight:600;">christastephens.github.io/Avalon-Resource-Hub-by-TymFlo/</a></p>
+    </div>
+    <p>The site has <strong>two areas</strong>:</p>
+    <div class="quick-ref">
+      <div class="quick-ref-card">
+        <h4>🌐 Public View</h4>
+        <p>Anyone can visit and search resources — no login, no account needed. This is what clients see.</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>🔒 Staff Area</h4>
+        <p>Password-protected. Only Avalon staff can add, remove, or restore organizations in the directory.</p>
+      </div>
+    </div>
+    <p>All resource information is stored in <strong>Airtable</strong>. When staff make a change in the Hub, it updates Airtable immediately. The public view refreshes automatically.</p>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2><span class="section-num">2</span> The Public View — What Clients See</h2>
+    <p>When a client visits the Resource Hub, they see a clean search page with all approved organizations listed as cards.</p>
+
+    <div class="screenshot-wrap">
+      <img src="guide-resources-loaded.jpg" alt="Public resource hub showing search and organization cards" />
+      <div class="screenshot-caption">The public Resource Hub as seen by any visitor — no login required.</div>
+    </div>
+
+    <h3>How Clients Use the Filters</h3>
+    <ul class="steps">
+      <li><p><strong>Search box</strong> — Type any word (organization name, service type, or keyword) to filter the list instantly.</p></li>
+      <li><p><strong>Support Type dropdown</strong> — Filter by service category (STI Testing, HIV Testing, Pregnancy Tests, etc.).</p></li>
+      <li><p><strong>Cost Options dropdown</strong> — Filter by cost structure (Free, Insurance Based, Sliding Scale, etc.).</p></li>
+      <li><p><strong>Accepts Uninsured checkbox</strong> — Check this to show only organizations that serve uninsured clients.</p></li>
+    </ul>
+
+    <h3>Each Organization Card Shows:</h3>
+    <ul style="padding-left: 20px; color: #4a4a4a; margin-top: 8px;">
+      <li style="margin-bottom: 6px;">Organization name and logo</li>
+      <li style="margin-bottom: 6px;">Cost badge (e.g., "Free – No costs")</li>
+      <li style="margin-bottom: 6px;">Services offered as small tags</li>
+      <li style="margin-bottom: 6px;">Notes / description</li>
+      <li style="margin-bottom: 6px;">Contact name and email</li>
+      <li style="margin-bottom: 6px;">"Visit Website" button linking to the organization's site</li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>Good to know</strong>
+      <p>Clients never need an account or login. They can use the Quick Exit button in the top-right corner at any time to instantly leave the page for their safety.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2><span class="section-num">3</span> Logging In to the Staff Area</h2>
+    <p>The Staff Area is password-protected. Only people with the staff password can access it.</p>
+
+    <h3>How to Access the Staff Area</h3>
+    <ul class="steps">
+      <li><p>Visit the Resource Hub at the website address above, or click the <strong>"Staff Access"</strong> button in the top navigation bar (desktop) or at the bottom of the page (mobile).</p></li>
+      <li><p>You will see the <strong>Staff Access login screen</strong> shown below.</p></li>
+      <li><p>Type the staff password into the box and click <strong>"Access Staff Area."</strong></p></li>
+      <li><p>If the password is correct, you will be taken directly into the staff dashboard.</p></li>
+    </ul>
+
+    <div class="screenshot-wrap">
+      <img src="guide-staff-login.jpg" alt="Staff Access login screen with password field" />
+      <div class="screenshot-caption">The Staff Access login page. Enter the password and click the green button to continue.</div>
+    </div>
+
+    <div class="warning-box">
+      <strong>Keep the password private</strong>
+      <p>Do not share the staff password with clients or post it anywhere publicly. If you believe the password has been compromised, contact your Avalon administrator to have it changed.</p>
+    </div>
+
+    <div class="tip-box">
+      <strong>Forgot the password?</strong>
+      <p>Contact the person who set up the Resource Hub for you, or reach out to TymFlo at <a href="https://tymflo.com" target="_blank" style="color:#1a7a72;">tymflo.com</a> for support.</p>
+    </div>
+
+    <h3>Logging Out</h3>
+    <p>When you are finished, click <strong>"Log Out"</strong> at the top-right of the Staff Area, or simply close the browser tab. Your session is not stored — the next person who opens the page will need to log in again.</p>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2><span class="section-num">4</span> Adding a New Organization</h2>
+    <p>Once you are logged in, you will land on the <strong>"Add Organization"</strong> tab. This is where you create a new resource listing.</p>
+
+    <h3>Step-by-Step: Adding an Organization</h3>
+    <ul class="steps">
+      <li><p>Make sure you are on the <strong>"Add Organization"</strong> tab (it is the default when you first log in).</p></li>
+      <li><p>Fill in the organization details using the form. Fields marked with a <span class="required">*</span> red star are <strong>required</strong> — the form will not submit without them.</p></li>
+      <li><p>Under <strong>"Support Options,"</strong> check all the services this organization provides. You must select at least one.</p></li>
+      <li><p>Check the <strong>"Approved by Avalon"</strong> checkbox to confirm this organization has been vetted. This is required before the listing goes live.</p></li>
+      <li><p>Click the <strong>"Add Organization"</strong> button at the bottom of the form.</p></li>
+      <li><p>A green confirmation message will appear: <em>"Organization added successfully!"</em> The new resource will appear in the public hub within a minute or two.</p></li>
+    </ul>
+
+    <h3>Form Fields Reference</h3>
+    <table class="field-table">
+      <thead>
+        <tr><th>Field</th><th>Description</th><th>Required?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Organization Name</strong></td><td>The full name of the organization as it will appear publicly</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Website</strong></td><td>Full URL starting with https:// (e.g., https://example.org)</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Primary Email</strong></td><td>Main contact email for this organization</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Contact Person</strong></td><td>Name of the main contact at the organization</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Phone</strong></td><td>Organization phone number</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Cost Structure</strong></td><td>How costs work: Free, Insurance Based, Sliding Scale, etc.</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Accepts Uninsured</strong></td><td>Check if they serve clients without insurance</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Support Options</strong></td><td>Services provided — check all that apply</td><td><span class="required">At least 1</span></td></tr>
+        <tr><td><strong>Notes</strong></td><td>Any additional helpful information for clients</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Approved by Avalon</strong></td><td>Confirms this resource has been reviewed by Avalon staff</td><td><span class="required">Required</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box">
+      <strong>Tip: After adding</strong>
+      <p>After a successful submission, the form clears automatically so you can add another organization right away. The new listing appears in the public hub after the data refreshes (within 60 seconds).</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2><span class="section-num">5</span> Removing or Restoring an Organization</h2>
+    <p>If an organization is no longer appropriate for the directory, you can <strong>remove</strong> it from the public view. It is never permanently deleted — you can always <strong>restore</strong> it later.</p>
+
+    <h3>Step-by-Step: Removing an Organization</h3>
+    <ul class="steps">
+      <li><p>After logging in, click the <strong>"Remove / Restore Organizations"</strong> tab at the top of the Staff Area.</p></li>
+      <li><p>The tab will load all current resources. Scroll to find the organization you want to remove.</p></li>
+      <li><p>Click the <strong>red "Remove"</strong> button on the organization's card. A confirmation prompt will appear asking you to confirm.</p></li>
+      <li><p>Click <strong>"Yes, Remove"</strong> to confirm. The organization will immediately disappear from the public view.</p></li>
+    </ul>
+
+    <h3>Step-by-Step: Restoring a Removed Organization</h3>
+    <ul class="steps">
+      <li><p>On the same <strong>"Remove / Restore"</strong> tab, removed organizations are shown with a gray <em>"Removed"</em> badge.</p></li>
+      <li><p>Find the organization you want to bring back and click the <strong>green "Restore"</strong> button.</p></li>
+      <li><p>The organization will reappear in the public hub immediately.</p></li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>Nothing is permanently deleted</strong>
+      <p>Removing an organization only hides it from the public view. All the information is preserved in Airtable and can be restored at any time using the Restore button.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Double-check before removing</strong>
+      <p>Once you click "Yes, Remove," the listing disappears from the public hub immediately. Make sure you have selected the correct organization before confirming.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2><span class="section-num">6</span> Quick Reference &amp; Tips</h2>
+
+    <h3>At a Glance</h3>
+    <div class="quick-ref">
+      <div class="quick-ref-card">
+        <h4>To add a new resource</h4>
+        <p>Staff Access → Log In → "Add Organization" tab → Fill form → Submit</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To remove a resource</h4>
+        <p>Staff Access → Log In → "Remove / Restore" tab → Click Remove → Confirm</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To restore a resource</h4>
+        <p>Staff Access → Log In → "Remove / Restore" tab → Find removed item → Click Restore</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To go back to the main site</h4>
+        <p>Click <strong>"← Back to Avalon"</strong> in the header or footer, or visit <a href="https://avalonhealing.org" target="_blank" style="color:#1a7a72;">avalonhealing.org</a></p>
+      </div>
+    </div>
+
+    <h3>Common Questions</h3>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: I added an organization but it's not showing up on the public site yet.</h3>
+    <p>The public view caches resources for up to 60 seconds to keep loading fast. Wait one minute and refresh the page — it will appear.</p>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: The form won't let me submit. What's wrong?</h3>
+    <p>Check that all required fields (marked with a red <span class="required">*</span>) are filled in, at least one Support Option is checked, and the "Approved by Avalon" checkbox is checked.</p>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: Can I edit an organization's information after adding it?</h3>
+    <p>Edits can be made directly in <strong>Airtable</strong>. Log in to Airtable, find the record, and update the fields. Changes appear on the Resource Hub within 60 seconds.</p>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: Can I use this on my phone?</h3>
+    <p>Yes. The Resource Hub and Staff Area work on mobile browsers. Use the "Staff Access" button in the footer to log in from a phone.</p>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: Who do I contact for technical support?</h3>
+    <p>Reach out to TymFlo at <a href="https://tymflo.com" target="_blank" style="color:#1a7a72; font-weight:600;">tymflo.com</a> for any technical issues with the Resource Hub.</p>
+
+    <div class="tip-box" style="margin-top:28px;">
+      <strong>Support Types Reference</strong>
+      <p>
+        <span class="tag">STI Testing</span><span class="tag">HIV Testing</span><span class="tag">Pregnancy Tests</span><span class="tag">Pregnancy Confirmations</span><span class="tag">Contraception</span><span class="tag">Ultrasounds</span><span class="tag">Live Birth</span><span class="tag">Grief/Loss</span><span class="tag">Undocumented</span><span class="tag">Termination</span><span class="tag">Chronic Care</span><span class="tag">Dental</span><span class="tag">Behavioral</span><span class="tag">Uninsured</span><span class="tag">Transporation</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="guide-footer">
+    <p>Avalon Resource Hub &mdash; Staff Guide &mdash; &copy; 2026 Avalon Healing Center</p>
+    <p style="margin-top:6px;">Built and maintained by <a href="https://tymflo.com" target="_blank" style="color:#1a7a72;">TymFlo</a></p>
+  </div>
+
+</div>
+</body>
+</html>
