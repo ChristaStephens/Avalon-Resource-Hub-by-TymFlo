@@ -568,7 +568,6 @@ a:hover { text-decoration: underline; }
 .login-btn:hover { background: var(--avalon-teal-dark); }
 .back-link {
   display: inline-block;
-  margin-top: 20px;
   font-size: 13px;
   color: var(--avalon-warm-gray);
 }
@@ -584,6 +583,22 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   margin-bottom: 20px;
 }
+.staff-header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.staff-guide-link {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--avalon-teal);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.staff-guide-link:hover { color: var(--avalon-teal-dark); }
 .staff-header h2 { font-size: 26px; color: var(--avalon-charcoal); margin-bottom: 6px; }
 .staff-header p { color: var(--avalon-warm-gray); font-size: 14px; }
 
