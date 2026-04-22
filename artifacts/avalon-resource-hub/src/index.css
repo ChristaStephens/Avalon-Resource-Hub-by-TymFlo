@@ -25,12 +25,15 @@
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { overflow-x: hidden; }
+
 body {
   font-family: var(--font-main);
   background: var(--avalon-light-gray);
   color: var(--avalon-charcoal);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 a { color: var(--avalon-teal); text-decoration: none; }
@@ -168,6 +171,8 @@ a:hover { text-decoration: underline; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
 }
 .main-content {
   max-width: 1200px;
@@ -175,6 +180,7 @@ a:hover { text-decoration: underline; }
   width: 100%;
   padding: 28px 24px 60px;
   flex: 1;
+  box-sizing: border-box;
 }
 
 /* ===== HERO SEARCH SECTION ===== */
@@ -583,22 +589,29 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   margin-bottom: 20px;
 }
-.staff-header-actions {
+.staff-guide-banner {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--avalon-teal);
+  color: white;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  text-decoration: none;
+  transition: background 0.15s;
 }
-.staff-guide-link {
-  display: inline-block;
-  font-size: 13px;
+.staff-guide-banner:hover { background: var(--avalon-teal-dark); text-decoration: none; }
+.staff-guide-banner-text {
+  font-size: 14px;
   font-weight: 600;
-  color: var(--avalon-teal);
-  text-decoration: underline;
-  white-space: nowrap;
+  color: white;
 }
-.staff-guide-link:hover { color: var(--avalon-teal-dark); }
+.staff-guide-banner-arrow {
+  font-size: 18px;
+  color: white;
+  font-weight: 700;
+}
 .staff-header h2 { font-size: 26px; color: var(--avalon-charcoal); margin-bottom: 6px; }
 .staff-header p { color: var(--avalon-warm-gray); font-size: 14px; }
 
@@ -1018,4 +1031,7 @@ a:hover { text-decoration: underline; }
   .hero-search-input { padding: 14px 44px 14px 46px; font-size: 15px; }
   .hero-filter-row { justify-content: flex-start; }
   .hero-results-count { margin-left: 0; width: 100%; }
+  .staff-header-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .back-link { margin-top: 0; }
+  .staff-area { max-width: 100%; }
 }
