@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TymFlo — Affordable Tech for Nonprofits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f7f5f3; color: #2d2d2d; line-height: 1.65; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a7a72 0%, #0d4f4a 100%);
+      color: white; padding: 80px 48px 72px; text-align: center;
+    }
+    .hero-eyebrow {
+      font-size: 12px; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; opacity: 0.65; margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 46px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; max-width: 680px; margin-left: auto; margin-right: auto; }
+    .hero h1 span { opacity: 0.55; }
+    .hero-sub { font-size: 18px; opacity: 0.82; max-width: 540px; margin: 0 auto 36px; }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 24px;
+      padding: 8px 22px; font-size: 14px; font-weight: 500;
+    }
+
+    /* PAGE */
+    .page { max-width: 880px; margin: 0 auto; padding: 56px 32px 80px; }
+
+    /* PAIN SECTION */
+    .pain-block {
+      background: white; border-radius: 14px; padding: 40px;
+      margin-bottom: 36px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .pain-block h2 { font-size: 24px; font-weight: 800; color: #1a1a1a; margin-bottom: 8px; }
+    .pain-block .sub { font-size: 15px; color: #7a7470; margin-bottom: 28px; }
+    .pain-list { list-style: none; padding: 0; }
+    .pain-list li {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid #f0ede9;
+      font-size: 15px; color: #3a3a3a;
+    }
+    .pain-list li:last-child { border-bottom: none; }
+    .pain-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+    /* SECTION HEADING */
+    .section-heading {
+      font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: #1a7a72;
+      margin: 48px 0 18px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-heading::after { content: ''; flex: 1; height: 1px; background: #e0dbd5; }
+
+    /* SOLUTION BLOCK */
+    .solution-intro {
+      background: #e8f5f3; border-radius: 14px; padding: 36px 40px;
+      margin-bottom: 24px;
+    }
+    .solution-intro h2 { font-size: 22px; font-weight: 700; color: #1a7a72; margin-bottom: 12px; }
+    .solution-intro p { font-size: 15px; color: #2d5a56; margin-bottom: 10px; }
+    .solution-intro p:last-child { margin-bottom: 0; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .solution-card {
+      background: white; border-radius: 12px; padding: 26px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .solution-card .icon { font-size: 28px; margin-bottom: 12px; }
+    .solution-card h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .solution-card p { font-size: 13px; color: #5a5a5a; line-height: 1.5; }
+
+    /* WHAT THEY GET */
+    .deliverable-list { list-style: none; padding: 0; }
+    .deliverable-list li {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: white; border-radius: 10px; padding: 20px 22px;
+      margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .d-check {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: #1a7a72; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .d-text strong { font-size: 14px; font-weight: 600; color: #1a1a1a; display: block; margin-bottom: 2px; }
+    .d-text span { font-size: 13px; color: #6a6a6a; }
+
+    /* CASE STUDY TEASER */
+    .case-study {
+      background: #1a7a72; color: white; border-radius: 14px;
+      padding: 40px; margin-bottom: 24px;
+    }
+    .case-study .label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.65; margin-bottom: 14px; }
+    .case-study h2 { font-size: 22px; font-weight: 700; margin-bottom: 14px; }
+    .case-study p { opacity: 0.88; font-size: 15px; margin-bottom: 12px; }
+    .case-study p:last-child { margin-bottom: 0; }
+    .case-study strong { opacity: 1; font-weight: 600; }
+    .stat-row { display: flex; gap: 32px; flex-wrap: wrap; margin: 24px 0; }
+    .stat { }
+    .stat .number { font-size: 32px; font-weight: 800; line-height: 1; }
+    .stat .desc { font-size: 12px; opacity: 0.7; margin-top: 4px; font-weight: 500; }
+
+    /* PRICING */
+    .pricing-block {
+      background: white; border-radius: 14px; padding: 40px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 24px;
+      text-align: center;
+    }
+    .pricing-block h2 { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .pricing-block .sub { font-size: 15px; color: #7a7470; margin-bottom: 32px; }
+    .price-tag { font-size: 52px; font-weight: 800; color: #1a7a72; line-height: 1; margin-bottom: 6px; }
+    .price-note { font-size: 14px; color: #8a8480; margin-bottom: 24px; }
+    .price-includes { text-align: left; list-style: none; padding: 0; display: inline-block; }
+    .price-includes li { font-size: 14px; color: #3a3a3a; padding: 6px 0; display: flex; gap: 10px; align-items: center; }
+    .price-includes li::before { content: '✓'; color: #1a7a72; font-weight: 700; }
+    .ongoing-cost {
+      background: #e8f5f3; border-radius: 10px; padding: 16px 20px;
+      margin-top: 24px; font-size: 14px; color: #2d5a56;
+    }
+    .ongoing-cost strong { font-weight: 700; }
+
+    /* EXPERTISE */
+    .expertise-block {
+      background: #f0ede9; border-radius: 14px; padding: 40px;
+      margin-bottom: 24px;
+    }
+    .expertise-block h2 { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; }
+    .expertise-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .expertise-item { background: white; border-radius: 10px; padding: 18px 16px; }
+    .expertise-item .num { font-size: 28px; font-weight: 800; color: #1a7a72; line-height: 1; }
+    .expertise-item p { font-size: 12px; color: #6a6a6a; margin-top: 4px; line-height: 1.4; }
+
+    /* CTA */
+    .cta-block {
+      background: linear-gradient(135deg, #1a7a72 0%, #0d4f4a 100%);
+      color: white; border-radius: 14px; padding: 48px 40px; text-align: center;
+    }
+    .cta-block h2 { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .cta-block p { opacity: 0.85; font-size: 16px; max-width: 480px; margin: 0 auto 28px; }
+    .cta-contact { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+
+    @media (max-width: 680px) {
+      .hero { padding: 56px 24px 48px; }
+      .hero h1 { font-size: 30px; }
+      .page { padding: 36px 20px 60px; }
+      .two-col { grid-template-columns: 1fr; }
+      .expertise-grid { grid-template-columns: 1fr 1fr; }
+      .pain-block, .solution-intro, .case-study, .cta-block, .pricing-block, .expertise-block { padding: 28px 22px; }
+      .stat-row { gap: 20px; }
+    }
+    @media print {
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">TymFlo — Built for Nonprofits</div>
+  <h1>Your community deserves a great website. <span>Your budget doesn't have to suffer for it.</span></h1>
+  <p class="hero-sub">We build tools nonprofits can actually afford, manage, and grow — with no monthly fees and no tech team required.</p>
+  <span class="hero-badge">Custom Web App + Airtable — Starting at $6,000</span>
+</div>
+
+<div class="page">
+
+  <!-- PAIN POINTS -->
+  <div class="section-heading">Sound Familiar?</div>
+
+  <div class="pain-block">
+    <h2>Most nonprofits get sold tools they can't fully use.</h2>
+    <p class="sub">We hear the same frustrations from every organization we talk to.</p>
+    <ul class="pain-list">
+      <li>
+        <span class="pain-icon">😤</span>
+        <span>Your website was built by a volunteer or a contractor who's no longer around — and now nobody knows how to update it.</span>
+      </li>
+      <li>
+        <span class="pain-icon">💸</span>
+        <span>You're paying monthly for a platform that keeps getting more expensive, and you can't switch because your data is locked in.</span>
+      </li>
+      <li>
+        <span class="pain-icon">📞</span>
+        <span>Every small change requires calling a developer and paying a bill — even just updating a phone number or adding a new resource.</span>
+      </li>
+      <li>
+        <span class="pain-icon">📋</span>
+        <span>You're managing resources in a spreadsheet but clients can't actually search or filter it — so staff have to answer the same questions over and over.</span>
+      </li>
+      <li>
+        <span class="pain-icon">🔒</span>
+        <span>You want staff to be able to update things, but you don't want clients to accidentally end up somewhere they shouldn't be.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- THE SOLUTION -->
+  <div class="section-heading">The TymFlo Approach</div>
+
+  <div class="solution-intro">
+    <h2>A real website connected to a spreadsheet your team already knows how to use.</h2>
+    <p>We pair a custom-built public-facing web app with <strong>Airtable</strong> — a tool that looks and works like a spreadsheet but can power a full database. Your staff updates a row, and the website updates automatically. No code. No developer needed. No surprises on your hosting bill.</p>
+    <p>The website is hosted for free on GitHub Pages — a permanent, reliable service that has no subscription and requires no maintenance contract. You own everything outright from day one.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="solution-card">
+      <div class="icon">🌐</div>
+      <h3>The Public Web App</h3>
+      <p>A clean, fast, mobile-friendly website with your organization's branding. Clients can search, filter, and find exactly what they need — no account, no login, no friction.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">📊</div>
+      <h3>Airtable as Your Database</h3>
+      <p>Your team manages everything from a simple interface that looks like a spreadsheet. Add a row, check a box, type a note — the website updates within the hour.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">🔒</div>
+      <h3>Staff-Only Controls</h3>
+      <p>A password-protected staff area lets your team add, remove, and restore records directly from the website — without ever touching Airtable if they don't want to.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">📱</div>
+      <h3>Works on Every Device</h3>
+      <p>Fully responsive — clients can use it on a phone, staff can manage it from a tablet. Nothing breaks, nothing overflows.</p>
+    </div>
+  </div>
+
+  <!-- WHAT THEY GET -->
+  <div class="section-heading">Everything That's Included</div>
+
+  <ul class="deliverable-list">
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Custom-designed web application</strong>
+        <span>Built with your branding, your content, and your community's specific needs in mind.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Airtable setup and integration</strong>
+        <span>We configure the database, connect it to the website, and make sure everything talks to each other correctly.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Deployment to GitHub Pages (free hosting, forever)</strong>
+        <span>No server bills, no subscription renewals, no vendor lock-in. Your site runs on infrastructure that has been free for over a decade.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Password-protected staff controls</strong>
+        <span>Staff can manage the content without clients seeing anything they shouldn't. No complicated permissions setup required.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Animated video walkthrough</strong>
+        <span>A short video that walks new staff through every part of the site — so training doesn't depend on one person being available.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Illustrated written staff guide</strong>
+        <span>A step-by-step guide with screenshots covering every task. Staff can reference it any time without contacting anyone.</span>
+      </div>
+    </li>
+    <li>
+      <div class="d-check">✓</div>
+      <div class="d-text">
+        <strong>Mobile-responsive design</strong>
+        <span>Looks and works correctly on phones, tablets, and desktops without any extra work on your end.</span>
+      </div>
+    </li>
+  </ul>
+
+  <!-- CASE STUDY -->
+  <div class="section-heading">Seen in the Real World</div>
+
+  <div class="case-study">
+    <div class="label">Client Story — Avalon Healing Center</div>
+    <h2>A community resource directory for survivors — built without a growing tech bill.</h2>
+    <p>Avalon Healing Center needed a way for clients to find local health and support organizations on their own — searchable, filterable, and safe to use. They also needed staff to be able to keep it current without calling a developer every time something changed.</p>
+    <p>We delivered a complete, live resource directory connected to their existing Airtable data — with a password-protected staff area, a Quick Exit button for client safety, and enough documentation that any staff member could manage it on day one.</p>
+    <div class="stat-row">
+      <div class="stat">
+        <div class="number">$0</div>
+        <div class="desc">monthly ongoing cost</div>
+      </div>
+      <div class="stat">
+        <div class="number">10+</div>
+        <div class="desc">organizations searchable at launch</div>
+      </div>
+      <div class="stat">
+        <div class="number">1</div>
+        <div class="desc">one-time investment, you own it forever</div>
+      </div>
+    </div>
+    <p><strong>Live at:</strong> christastephens.github.io/Avalon-Resource-Hub-by-TymFlo</p>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section-heading">Investment</div>
+
+  <div class="pricing-block">
+    <h2>Simple, flat pricing. No surprises.</h2>
+    <p class="sub">One price covers everything from design to documentation. We don't bill by the hour or charge for revisions.</p>
+    <div class="price-tag">$6,000</div>
+    <div class="price-note">one-time · you own the code · no recurring fees</div>
+    <ul class="price-includes">
+      <li>Custom web application design and development</li>
+      <li>Airtable database setup and integration</li>
+      <li>Free GitHub Pages deployment and configuration</li>
+      <li>Password-protected staff content management</li>
+      <li>Animated video walkthrough</li>
+      <li>Illustrated written staff guide</li>
+      <li>Mobile-responsive across all devices</li>
+    </ul>
+    <div class="ongoing-cost">
+      <strong>After delivery:</strong> $0/month. Your site runs on free infrastructure. The only future cost is if you choose to add new features — and even then, you decide when and whether that happens.
+    </div>
+  </div>
+
+  <!-- EXPERTISE -->
+  <div class="section-heading">Why TymFlo</div>
+
+  <div class="expertise-block">
+    <h2>We build things that work for the people using them — not just the people paying for them.</h2>
+    <div class="expertise-grid">
+      <div class="expertise-item">
+        <div class="num">$0</div>
+        <p>monthly hosting cost for every project we deliver on GitHub Pages</p>
+      </div>
+      <div class="expertise-item">
+        <div class="num">100%</div>
+        <p>of our clients own their code outright — no vendor lock-in, ever</p>
+      </div>
+      <div class="expertise-item">
+        <div class="num">Day 1</div>
+        <p>every project is documented so staff can manage it independently from the moment it launches</p>
+      </div>
+    </div>
+    <p style="margin-top: 20px; font-size: 14px; color: #5a5a5a; line-height: 1.6;">We don't believe nonprofits should have to choose between a professional product and a manageable budget. The TymFlo model is built around tools that are already free — Airtable, GitHub Pages — and putting them together in a way that's polished, reliable, and something your organization actually controls.</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h2>Let's talk about what your organization needs.</h2>
+    <p>Every project starts with a conversation. Tell us what you're trying to help people find or do — and we'll tell you honestly whether and how we can help.</p>
+    <div class="cta-contact">Reach out to TymFlo to start the conversation.</div>
+  </div>
+
+</div>
+</body>
+</html>
