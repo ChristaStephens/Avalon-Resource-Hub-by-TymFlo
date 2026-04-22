@@ -265,15 +265,28 @@ export default function StaffArea() {
               <a href="/" className="back-link">← View Public Hub</a>
             </div>
 
-            <a
-              href={`${import.meta.env.BASE_URL || "/"}staff-guide.html`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="staff-guide-banner"
-            >
-              <span className="staff-guide-banner-text">Need help? Open the Staff Guide</span>
-              <span className="staff-guide-banner-arrow">→</span>
-            </a>
+            <div className="staff-resource-links">
+              <a
+                href="https://359acbe4-584e-49a6-8b5f-32579d652695-00-3nde5n1ndjcv.riker.replit.dev/avalon-walkthrough-video/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="staff-resource-card staff-resource-card--video"
+              >
+                <span className="staff-resource-icon">▶</span>
+                <span className="staff-resource-label">Watch Video Walkthrough</span>
+                <span className="staff-resource-arrow">→</span>
+              </a>
+              <a
+                href={`${import.meta.env.BASE_URL || "/"}staff-guide.html`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="staff-resource-card staff-resource-card--guide"
+              >
+                <span className="staff-resource-icon">📋</span>
+                <span className="staff-resource-label">Open Written Staff Guide</span>
+                <span className="staff-resource-arrow">→</span>
+              </a>
+            </div>
 
             <div className="staff-tabs">
               <button
