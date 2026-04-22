@@ -267,7 +267,7 @@ export default function StaffArea() {
 
             <div className="staff-resource-links">
               <a
-                href="https://359acbe4-584e-49a6-8b5f-32579d652695-00-3nde5n1ndjcv.riker.replit.dev/avalon-walkthrough-video/"
+                href={`${import.meta.env.BASE_URL}walkthrough/`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="staff-resource-card staff-resource-card--video"
