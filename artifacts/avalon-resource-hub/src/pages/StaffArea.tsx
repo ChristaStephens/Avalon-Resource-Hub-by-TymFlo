@@ -262,18 +262,18 @@ export default function StaffArea() {
                 <h2>Staff Area</h2>
                 <p>Manage the organizations shown in the public Resource Hub.</p>
               </div>
-              <div className="staff-header-actions">
-                <a
-                  href={`${import.meta.env.BASE_URL || "/"}staff-guide.html`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="staff-guide-link"
-                >
-                  Staff Guide
-                </a>
-                <a href="/" className="back-link">← View Public Hub</a>
-              </div>
+              <a href="/" className="back-link">← View Public Hub</a>
             </div>
+
+            <a
+              href={`${import.meta.env.BASE_URL || "/"}staff-guide.html`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="staff-guide-banner"
+            >
+              <span className="staff-guide-banner-text">Need help? Open the Staff Guide</span>
+              <span className="staff-guide-banner-arrow">→</span>
+            </a>
 
             <div className="staff-tabs">
               <button
