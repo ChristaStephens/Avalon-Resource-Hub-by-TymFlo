@@ -821,6 +821,15 @@ a:hover { text-decoration: underline; }
 }
 
 .staff-form { display: flex; flex-direction: column; gap: 28px; }
+.form-public-notice {
+  background: #e8f5f3;
+  border-left: 4px solid var(--avalon-teal);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 13px 18px;
+  font-size: 14px;
+  color: #2d5a56;
+  line-height: 1.5;
+}
 .form-section {
   background: white;
   border-radius: var(--radius-lg);
