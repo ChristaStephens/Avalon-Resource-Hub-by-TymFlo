@@ -320,6 +320,9 @@ export default function StaffArea() {
               )}
 
               <form onSubmit={handleSubmit} className="staff-form">
+                <div className="form-public-notice">
+                  💡 <strong>Just a heads up</strong> — the organization details you enter in this form will be visible to the public on the Resource Hub once you hit submit.
+                </div>
                 <div className="form-section">
                   <h3>Organization Info</h3>
                   <div className="form-grid">
