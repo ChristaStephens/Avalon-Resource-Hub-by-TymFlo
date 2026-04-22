@@ -77,6 +77,32 @@
     .quick-ref-card h4 { font-size: 14px; font-weight: 600; color: #1a7a72; margin-bottom: 8px; }
     .quick-ref-card p { font-size: 13px; color: #4a4a4a; margin: 0; }
 
+    /* Video banner */
+    .video-banner {
+      background: #0f5c55;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .video-banner:hover { background: #0a4540; text-decoration: none; }
+    .video-banner-left { display: flex; align-items: center; gap: 16px; }
+    .video-play-circle {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+    .video-banner-text h3 { color: white; font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .video-banner-text p { color: rgba(255,255,255,0.75); font-size: 13px; margin: 0; }
+    .video-banner-arrow { color: white; font-size: 26px; font-weight: 700; flex-shrink: 0; }
+
     /* Footer */
     .guide-footer { text-align: center; color: #9a9490; font-size: 12px; margin-top: 40px; padding-top: 24px; border-top: 1px solid #e4e0dc; }
 
@@ -85,6 +111,8 @@
       .cover h1 { font-size: 26px; }
       .section { padding: 24px 20px; }
       .quick-ref { grid-template-columns: 1fr; }
+      .video-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .video-banner-arrow { display: none; }
     }
     @media print {
       body { background: white; }
@@ -103,6 +131,23 @@
 </div>
 
 <div class="page">
+
+  <!-- VIDEO WALKTHROUGH BANNER -->
+  <a
+    href="https://359acbe4-584e-49a6-8b5f-32579d652695-00-3nde5n1ndjcv.riker.replit.dev/avalon-walkthrough-video/"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="video-banner"
+  >
+    <div class="video-banner-left">
+      <div class="video-play-circle">▶</div>
+      <div class="video-banner-text">
+        <h3>Watch the Video Walkthrough</h3>
+        <p>A short animated tour of the Resource Hub — public view, staff login, adding and removing resources.</p>
+      </div>
+    </div>
+    <div class="video-banner-arrow">→</div>
+  </a>
 
   <!-- TABLE OF CONTENTS -->
   <div class="toc">
