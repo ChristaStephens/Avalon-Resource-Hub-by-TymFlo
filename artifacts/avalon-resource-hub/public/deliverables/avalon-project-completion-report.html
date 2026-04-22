@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Completion Report — Avalon Resource Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f7f5f3; color: #2d2d2d; line-height: 1.65; }
+
+    .cover {
+      background: linear-gradient(135deg, #1a7a72 0%, #0f5c55 100%);
+      color: white;
+      padding: 72px 48px 60px;
+    }
+    .cover-eyebrow {
+      font-size: 12px; font-weight: 600; letter-spacing: 2.5px;
+      text-transform: uppercase; opacity: 0.7; margin-bottom: 20px;
+    }
+    .cover h1 { font-size: 42px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+    .cover-sub { font-size: 18px; opacity: 0.85; max-width: 540px; margin-bottom: 40px; }
+    .cover-meta {
+      display: flex; gap: 40px; flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      padding-top: 28px; margin-top: 8px;
+    }
+    .cover-meta-item { }
+    .cover-meta-item .label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px; }
+    .cover-meta-item .value { font-size: 15px; font-weight: 600; }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 52px 32px 80px; }
+
+    .intro-block {
+      background: white; border-radius: 14px; padding: 36px 40px;
+      margin-bottom: 36px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .intro-block p { font-size: 16px; color: #3a3a3a; margin-bottom: 14px; }
+    .intro-block p:last-child { margin-bottom: 0; }
+    .intro-block strong { color: #1a7a72; }
+
+    .section-heading {
+      font-size: 12px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #1a7a72;
+      margin: 44px 0 16px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-heading::after {
+      content: ''; flex: 1; height: 1px; background: #e0dbd5;
+    }
+
+    .card { background: white; border-radius: 14px; padding: 32px 36px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .card h3 { font-size: 18px; font-weight: 700; color: #1a7a72; margin-bottom: 10px; }
+    .card p { color: #4a4a4a; font-size: 15px; }
+    .card p + p { margin-top: 10px; }
+
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+    .feature-item {
+      background: white; border-radius: 12px; padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .feature-check {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e8f5f3; color: #1a7a72;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    .feature-text strong { font-size: 14px; color: #1a1a1a; display: block; margin-bottom: 3px; font-weight: 600; }
+    .feature-text span { font-size: 13px; color: #6a6a6a; line-height: 1.4; }
+
+    .exceeded-list { list-style: none; padding: 0; }
+    .exceeded-list li {
+      display: flex; gap: 14px; padding: 18px 0;
+      border-bottom: 1px solid #f0ede9; align-items: flex-start;
+    }
+    .exceeded-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .star { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .exceeded-list .text strong { font-size: 14px; font-weight: 600; color: #1a1a1a; display: block; margin-bottom: 2px; }
+    .exceeded-list .text span { font-size: 13px; color: #5a5a5a; }
+
+    .budget-block {
+      background: #1a7a72; border-radius: 14px; padding: 36px 40px;
+      color: white; margin-bottom: 20px;
+    }
+    .budget-block h3 { font-size: 20px; font-weight: 700; margin-bottom: 14px; }
+    .budget-block p { opacity: 0.88; font-size: 15px; margin-bottom: 12px; }
+    .budget-block p:last-child { margin-bottom: 0; }
+    .budget-block strong { opacity: 1; font-weight: 600; }
+
+    .growth-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+    .growth-card {
+      background: white; border-radius: 12px; padding: 22px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07); text-align: center;
+    }
+    .growth-icon { font-size: 28px; margin-bottom: 10px; }
+    .growth-card h4 { font-size: 14px; font-weight: 700; color: #1a7a72; margin-bottom: 6px; }
+    .growth-card p { font-size: 12px; color: #6a6a6a; line-height: 1.45; }
+
+    .investment-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid #f0ede9;
+      font-size: 14px;
+    }
+    .investment-row:last-child { border-bottom: none; }
+    .investment-row .item { color: #3a3a3a; }
+    .investment-row .amount { font-weight: 600; color: #1a7a72; }
+    .investment-row.total .item { font-weight: 700; font-size: 16px; color: #1a1a1a; }
+    .investment-row.total .amount { font-weight: 800; font-size: 18px; color: #1a7a72; }
+
+    .tymflo-block {
+      background: #f0ede9; border-radius: 14px; padding: 36px 40px;
+      margin-bottom: 20px;
+    }
+    .tymflo-block h3 { font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+    .tymflo-block p { font-size: 14px; color: #4a4a4a; margin-bottom: 10px; }
+    .tymflo-block p:last-child { margin-bottom: 0; }
+
+    .sign-off { text-align: center; padding: 48px 24px 0; }
+    .sign-off p { font-size: 14px; color: #8a8480; margin-bottom: 6px; }
+    .sign-off strong { font-size: 16px; color: #1a7a72; font-weight: 700; display: block; margin-top: 8px; }
+
+    @media (max-width: 680px) {
+      .cover { padding: 48px 24px 40px; }
+      .cover h1 { font-size: 30px; }
+      .page { padding: 36px 20px 60px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .growth-grid { grid-template-columns: 1fr; }
+      .card, .intro-block, .budget-block, .tymflo-block { padding: 24px 20px; }
+    }
+    @media print {
+      body { background: white; }
+      .card, .feature-item, .growth-card { box-shadow: none; border: 1px solid #e4e0dc; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-eyebrow">Project Completion Report</div>
+  <h1>Avalon Resource Hub</h1>
+  <p class="cover-sub">A community resource directory built to serve survivors — without a growing tech bill.</p>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <div class="label">Client</div>
+      <div class="value">Avalon Healing Center</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Delivered By</div>
+      <div class="value">TymFlo</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Delivery Date</div>
+      <div class="value">April 2026</div>
+    </div>
+    <div class="cover-meta-item">
+      <div class="label">Project Investment</div>
+      <div class="value">$6,000 (one-time)</div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="intro-block">
+    <p>Avalon Healing Center came to TymFlo with a clear concern: <strong>how do we build something real for our community without signing up for a monthly bill that climbs every time we need to add something?</strong></p>
+    <p>That question shaped every decision in this project. The Resource Hub was built on tools your organization already has access to for free, designed so your own staff can manage it going forward — no tech team, no developer on call, no recurring fees.</p>
+    <p>This report summarizes exactly what was built, what was exceeded, what it costs to run, and where it can go from here.</p>
+  </div>
+
+  <div class="section-heading">What Was Built</div>
+
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Public Resource Directory</strong>
+        <span>Anyone can visit and search — no account, no login, no barriers for the people who need help.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Search, Filter &amp; Sort</strong>
+        <span>Filter by support type, cost, and insurance acceptance. Results update instantly as you type.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Staff-Only Add &amp; Remove</strong>
+        <span>Password-protected area where your team adds new organizations or removes ones that are no longer active.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Restore Removed Records</strong>
+        <span>Removed organizations aren't deleted — staff can restore them any time without losing any data.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Quick Exit Button</strong>
+        <span>A red "Quick Exit" button is always visible. One click takes visitors away immediately — a critical safety feature for survivors.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Avalon Branding</strong>
+        <span>Avalon's teal palette, logo, and fonts throughout — it looks like it belongs to you, because it does.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Link Back to Avalon</strong>
+        <span>"Back to Avalon" in the navigation and footer keeps visitors connected to your main website.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Smart Caching</strong>
+        <span>The site stores data locally for 60 minutes so it loads fast and stays under Airtable's free usage limits.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Video Walkthrough</strong>
+        <span>A full animated walkthrough video showing the public view, staff login, adding, and removing resources.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-check">✓</div>
+      <div class="feature-text">
+        <strong>Written Staff Guide</strong>
+        <span>An illustrated, step-by-step guide with screenshots covering every task a staff member would need to do.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-heading">Where We Went Further</div>
+
+  <div class="card">
+    <ul class="exceeded-list">
+      <li>
+        <div class="star">⭐</div>
+        <div class="text">
+          <strong>Staff guide is private — not public</strong>
+          <span>The written guide is only accessible after a staff member logs in. Clients browsing the public site will never see internal documentation.</span>
+        </div>
+      </li>
+      <li>
+        <div class="star">⭐</div>
+        <div class="text">
+          <strong>Help is two clicks away, always</strong>
+          <span>The video walkthrough and written guide are both linked directly inside the staff dashboard. Staff never have to go looking for instructions.</span>
+        </div>
+      </li>
+      <li>
+        <div class="star">⭐</div>
+        <div class="text">
+          <strong>Clear notice before submitting a record</strong>
+          <span>A plain-language heads-up appears at the top of the add form reminding staff that what they enter will be visible to the public — reducing mistakes before they happen.</span>
+        </div>
+      </li>
+      <li>
+        <div class="star">⭐</div>
+        <div class="text">
+          <strong>Works on phones</strong>
+          <span>The entire site — public and staff — works cleanly on mobile devices. Staff can manage resources from a phone without anything breaking or overflowing.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section-heading">The Budget Question</div>
+
+  <div class="budget-block">
+    <h3>What this costs to run after today: $0 per month.</h3>
+    <p>The Resource Hub is hosted on <strong>GitHub Pages</strong> — a free, permanent hosting service that requires no subscription and no maintenance contract. Your data lives in <strong>Airtable's free plan</strong>, which handles everything this site needs without ever hitting a paid tier.</p>
+    <p>There is no server to manage, no platform to renew, and no vendor who can raise your rates. You own the code. You own the data. If your needs grow, the path to expand is clear — and it starts from something that already works.</p>
+  </div>
+
+  <div class="section-heading">Where It Can Go From Here</div>
+
+  <div class="growth-grid">
+    <div class="growth-card">
+      <div class="growth-icon">📋</div>
+      <h4>More Resource Types</h4>
+      <p>Add new service categories to the filter dropdowns directly in Airtable — no code changes needed.</p>
+    </div>
+    <div class="growth-card">
+      <div class="growth-icon">🌐</div>
+      <h4>Multiple Languages</h4>
+      <p>The site can be extended to display resources in Spanish or other languages as your community's needs grow.</p>
+    </div>
+    <div class="growth-card">
+      <div class="growth-icon">📍</div>
+      <h4>Location &amp; Maps</h4>
+      <p>Add a distance filter or map view so clients can find organizations nearest to them.</p>
+    </div>
+    <div class="growth-card">
+      <div class="growth-icon">📊</div>
+      <h4>Usage Insights</h4>
+      <p>Connect free analytics to see which resources are viewed most and what clients search for most often.</p>
+    </div>
+    <div class="growth-card">
+      <div class="growth-icon">🔗</div>
+      <h4>Embed on Avalon's Site</h4>
+      <p>The Resource Hub can be embedded directly on avalonhealing.org so clients never leave your main site.</p>
+    </div>
+    <div class="growth-card">
+      <div class="growth-icon">📬</div>
+      <h4>Resource Request Form</h4>
+      <p>Add a form where clients or community partners can suggest new organizations for staff to review.</p>
+    </div>
+  </div>
+
+  <div class="section-heading">Investment Summary</div>
+
+  <div class="card">
+    <div class="investment-row">
+      <div class="item">Custom web application design &amp; development</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row">
+      <div class="item">Airtable integration (read &amp; write)</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row">
+      <div class="item">GitHub Pages deployment &amp; configuration</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row">
+      <div class="item">Animated video walkthrough</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row">
+      <div class="item">Illustrated written staff guide</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row">
+      <div class="item">Mobile-responsive design</div>
+      <div class="amount">included</div>
+    </div>
+    <div class="investment-row total">
+      <div class="item">Total one-time investment</div>
+      <div class="amount">$6,000</div>
+    </div>
+  </div>
+
+  <div class="section-heading">About TymFlo</div>
+
+  <div class="tymflo-block">
+    <h3>We build tools that work for the people using them.</h3>
+    <p>TymFlo specializes in building practical, affordable technology for organizations that do real work in their communities. We don't sell subscriptions. We don't hand you something you need a developer to maintain. We build things that your team can own and operate — and that can grow with you.</p>
+    <p>The Avalon Resource Hub is a complete, production-ready product delivered at a one-time price, built on free infrastructure, and documented so thoroughly that any staff member can manage it on day one.</p>
+    <p>That's the standard we hold every project to.</p>
+  </div>
+
+  <div class="sign-off">
+    <p>Prepared and delivered by</p>
+    <strong>TymFlo</strong>
+    <p style="margin-top: 6px; font-size: 13px; color: #aaa;">April 2026</p>
+  </div>
+
+</div>
+</body>
+</html>
