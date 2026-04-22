@@ -42,19 +42,6 @@ jobs:
           # Skip the minimum release age check in CI (packages are from lockfile)
           NPM_CONFIG_MINIMUM_RELEASE_AGE: 0
 
-      - name: Build video walkthrough
-        run: pnpm --filter @workspace/avalon-walkthrough-video run build
-        env:
-          PORT: "3000"
-          BASE_PATH: /Avalon-Resource-Hub-by-TymFlo/walkthrough/
-
-      - name: Copy video into resource hub public folder
-        run: |
-          echo "=== Video build output ===" && ls -la artifacts/avalon-walkthrough-video/dist/public/ || true
-          mkdir -p artifacts/avalon-resource-hub/public/walkthrough
-          python3 -c "import shutil; shutil.copytree('artifacts/avalon-walkthrough-video/dist/public', 'artifacts/avalon-resource-hub/public/walkthrough', dirs_exist_ok=True)"
-          echo "=== Walkthrough folder ===" && ls -la artifacts/avalon-resource-hub/public/walkthrough/
-
       - name: Build
         run: pnpm --filter @workspace/avalon-resource-hub run build:gh-pages
         env:
