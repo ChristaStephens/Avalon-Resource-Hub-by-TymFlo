@@ -25,6 +25,14 @@ export function Footer() {
           >
             Staff Access
           </button>
+          <a
+            href={`${base}staff-guide.html`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-staff-link"
+          >
+            Staff Guide
+          </a>
         </div>
 
         <div className="site-footer-bottom">
