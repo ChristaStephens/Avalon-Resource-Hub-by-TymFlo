@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #1a7a72;
+  --color-secondary: #0f5c55;
+  --color-accent: #c9a84c;
+
+  --color-bg-light: #f7f5f3;
+  --color-bg-dark: #0f5c55;
+  --color-bg-muted: #ffffff;
+
+  --color-text-primary: #0f5c55;
+  --color-text-secondary: #1a7a72;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #ffffff;
+
+  --color-success: #1a7a72;
+  --color-warning: #c9a84c;
+  --color-error: #ef4444;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-muted: var(--color-bg-muted);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg-light);
+  color: var(--color-text-primary);
+  margin: 0;
+  overflow: hidden;
+}

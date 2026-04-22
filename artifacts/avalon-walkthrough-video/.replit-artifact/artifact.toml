@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/avalon-walkthrough-video/"
+title = "Resource Hub Walkthrough Video"
+version = "1.0.0"
+id = "artifacts/avalon-walkthrough-video"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/avalon-walkthrough-video/" ]
+localPort = 22143
+
+[services.development]
+run = "pnpm --filter @workspace/avalon-walkthrough-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/avalon-walkthrough-video", "run", "build" ]
+publicDir = "artifacts/avalon-walkthrough-video/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22143"
+BASE_PATH = "/avalon-walkthrough-video/"

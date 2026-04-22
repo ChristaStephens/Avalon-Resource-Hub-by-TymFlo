@@ -47,7 +47,7 @@ jobs:
           VITE_AIRTABLE_PAT: ${{ secrets.VITE_AIRTABLE_PAT }}
           VITE_AIRTABLE_BASE_ID: ${{ vars.VITE_AIRTABLE_BASE_ID }}
           VITE_AIRTABLE_TABLE_ID: ${{ vars.VITE_AIRTABLE_TABLE_ID }}
-          VITE_STAFF_PASSWORD: ${{ secrets.VITE_STAFF_PASSWORD }}
+          VITE_STAFF_PASSWORD_HASH: ${{ secrets.VITE_STAFF_PASSWORD_HASH }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
