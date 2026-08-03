@@ -1,11 +1,18 @@
 import { Resource } from "@/lib/airtable";
 
+const MAX_VISIBLE_TAGS = 4;
+
 interface ResourceCardProps {
   resource: Resource;
+  onCardClick: (resource: Resource) => void;
 }
 
-export function ResourceCard({ resource }: ResourceCardProps) {
-  const handleWebsiteClick = () => {
+export function ResourceCard({ resource, onCardClick }: ResourceCardProps) {
+  const visibleTags = resource.supportOptions.slice(0, MAX_VISIBLE_TAGS);
+  const extraCount = resource.supportOptions.length - MAX_VISIBLE_TAGS;
+
+  const handleWebsiteClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // don't open modal when clicking "Visit Website"
     if (resource.website) {
       let url = resource.website;
       if (!url.startsWith("http")) url = "https://" + url;
@@ -14,7 +21,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
   };
 
   return (
-    <div className="resource-card">
+    <div className="resource-card resource-card--clickable" onClick={() => onCardClick(resource)}>
       <div className="resource-card-header">
         {resource.logo ? (
           <img src={resource.logo} alt={`${resource.organization} logo`} className="resource-logo" />
@@ -36,11 +43,14 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           </div>
         )}
 
-        {resource.supportOptions.length > 0 && (
+        {visibleTags.length > 0 && (
           <div className="resource-tags">
-            {resource.supportOptions.map((opt) => (
+            {visibleTags.map((opt) => (
               <span key={opt} className="resource-tag">{opt}</span>
             ))}
+            {extraCount > 0 && (
+              <span className="resource-tag resource-tag--more">+{extraCount} more</span>
+            )}
           </div>
         )}
 
@@ -48,22 +58,7 @@ export function ResourceCard({ resource }: ResourceCardProps) {
           <p className="resource-notes">{resource.notes}</p>
         )}
 
-        <div className="resource-contacts">
-          {resource.contact && (
-            <div className="resource-contact-row">
-              <span className="contact-label">Contact:</span>
-              <span className="contact-value">{resource.contact}</span>
-            </div>
-          )}
-          {resource.primaryContactEmail && (
-            <div className="resource-contact-row">
-              <span className="contact-label">Email:</span>
-              <a href={`mailto:${resource.primaryContactEmail}`} className="contact-link">
-                {resource.primaryContactEmail}
-              </a>
-            </div>
-          )}
-        </div>
+        <p className="resource-card-cta">Click to see full details</p>
       </div>
 
       {resource.website && (

@@ -3,6 +3,7 @@ import { fetchResources, Resource, AIRTABLE_CONFIGURED, clearCache } from "@/lib
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ResourceCard } from "@/components/ResourceCard";
+import { ResourceModal } from "@/components/ResourceModal";
 import { SearchFilter } from "@/components/SearchFilter";
 
 export default function PublicHub() {
@@ -15,6 +16,7 @@ export default function PublicHub() {
   const [selectedSupport, setSelectedSupport] = useState("");
   const [selectedCost, setSelectedCost] = useState("");
   const [uninsuredOnly, setUninsuredOnly] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
   const loadResources = async (force = false) => {
     setLoading(true);
@@ -134,9 +136,13 @@ export default function PublicHub() {
         {!loading && !error && filtered.length > 0 && (
           <div className="resources-grid">
             {filtered.map((r) => (
-              <ResourceCard key={r.id} resource={r} />
+              <ResourceCard key={r.id} resource={r} onCardClick={setSelectedResource} />
             ))}
           </div>
+        )}
+
+        {selectedResource && (
+          <ResourceModal resource={selectedResource} onClose={() => setSelectedResource(null)} />
         )}
 
         {lastRefresh && (
