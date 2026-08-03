@@ -1,10 +1,37 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useLocation } from "wouter";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { createResource, AIRTABLE_CONFIGURED } from "@/lib/airtable";
+import { createResource, uploadLogoAttachment, AIRTABLE_CONFIGURED } from "@/lib/airtable";
 
 const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT || "";
+
+const SUPPORT_OPTIONS = [
+  "STI Testing",
+  "HIV Testing",
+  "Pregnancy Tests",
+  "Pregnancy Confirmations",
+  "Contraception",
+  "Ultrasounds",
+  "Live Birth",
+  "Grief/Loss",
+  "Undocumented",
+  "Termination",
+  "Chronic Care",
+  "Dental",
+  "Behavioral",
+  "Uninsured",
+  "Transporation",
+];
+
+const COST_OPTIONS = [
+  "Free - No costs ",
+  "Free prenatal care; insurance billed for well person gyn ",
+  "Insurance based",
+  "Will help with insurance sign up",
+  "Offers - Free prenatals ",
+  "Based on EGA - Financial Assistance Available",
+];
 
 const EMPTY_FORM = {
   organization: "",
@@ -12,15 +39,34 @@ const EMPTY_FORM = {
   website: "",
   primaryEmail: "",
   secondaryEmail: "",
+  costs: "",
+  uninsured: "",
+  supportOptions: [] as string[],
   notes: "",
 };
 
 export default function ProviderApplication() {
   const [, navigate] = useLocation();
   const [form, setForm] = useState(EMPTY_FORM);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSupportToggle = (opt: string) => {
+    setForm((f) => ({
+      ...f,
+      supportOptions: f.supportOptions.includes(opt)
+        ? f.supportOptions.filter((s) => s !== opt)
+        : [...f.supportOptions, opt],
+    }));
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setLogoFile(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,23 +75,35 @@ export default function ProviderApplication() {
     if (!form.organization.trim()) { setError("Organization Name is required."); return; }
     if (!form.website.trim()) { setError("Website URL is required."); return; }
     if (!form.primaryEmail.trim()) { setError("Primary Contact Email is required."); return; }
+    if (!form.costs) { setError("Cost Structure is required."); return; }
+    if (form.supportOptions.length === 0) { setError("Please select at least one Support Option."); return; }
 
     setSubmitting(true);
     try {
       // 1. Create unapproved Airtable record (pending staff review)
       const payload: Record<string, unknown> = {
         Organization: form.organization,
+        "Support Options": form.supportOptions,
+        "Costs ": form.costs,
         "Approved by Avalon Admin": false,
       };
       if (form.contact) payload["Contact"] = form.contact;
       if (form.website) payload["Website"] = form.website;
       if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
       if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
+      if (form.uninsured) payload["Uninsured"] = form.uninsured;
       if (form.notes) payload["NOTES"] = form.notes;
 
-      await createResource(payload);
+      const recordId = await createResource(payload);
 
-      // 2. Send email notification via Formspree (gracefully skipped if not configured)
+      // 2. Upload logo if provided (non-blocking — failure doesn't cancel submission)
+      if (logoFile && recordId) {
+        await uploadLogoAttachment(recordId, logoFile).catch(() => {
+          // Logo upload failure is non-blocking
+        });
+      }
+
+      // 3. Send email notification via Formspree (gracefully skipped if not configured)
       if (FORMSPREE_ENDPOINT) {
         await fetch(FORMSPREE_ENDPOINT, {
           method: "POST",
@@ -57,16 +115,33 @@ export default function ProviderApplication() {
             website: form.website,
             email: form.primaryEmail,
             secondaryEmail: form.secondaryEmail || "(not provided)",
+            costs: form.costs,
+            uninsured: form.uninsured || "(not specified)",
+            supportOptions: form.supportOptions.join(", "),
             notes: form.notes || "(none)",
-            message: `A new organization has applied to be listed on the Avalon Resource Hub and is awaiting your review in the Staff Area.\n\nOrganization: ${form.organization}\nContact: ${form.contact || "(not provided)"}\nWebsite: ${form.website}\nEmail: ${form.primaryEmail}\nNotes: ${form.notes || "(none)"}`,
+            message: [
+              "A new organization has applied to be listed on the Avalon Resource Hub and is awaiting your review in the Staff Area.",
+              "",
+              `Organization: ${form.organization}`,
+              `Contact: ${form.contact || "(not provided)"}`,
+              `Website: ${form.website}`,
+              `Primary Email: ${form.primaryEmail}`,
+              `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
+              `Cost Structure: ${form.costs}`,
+              `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
+              `Support Options: ${form.supportOptions.join(", ")}`,
+              `Notes: ${form.notes || "(none)"}`,
+              `Logo uploaded: ${logoFile ? "Yes" : "No"}`,
+            ].join("\n"),
           }),
         }).catch(() => {
-          // Email failure is non-blocking — submission still succeeded
+          // Email failure is non-blocking
         });
       }
 
       setSubmitted(true);
       setForm(EMPTY_FORM);
+      setLogoFile(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
@@ -130,6 +205,8 @@ export default function ProviderApplication() {
           )}
 
           <form onSubmit={handleSubmit} className="staff-form">
+
+            {/* ── Organization Info ── */}
             <div className="form-section">
               <h3>Organization Info</h3>
               <div className="form-grid">
@@ -191,9 +268,90 @@ export default function ProviderApplication() {
                     className="form-input"
                   />
                 </div>
+
+                {/* Logo upload */}
+                <div className="form-field full-width">
+                  <label htmlFor="p-logo">Organization Logo <span className="label-hint">PNG or JPG recommended</span></label>
+                  <div className="logo-upload-wrap">
+                    <input
+                      ref={fileInputRef}
+                      id="p-logo"
+                      type="file"
+                      accept="image/*"
+                      className="logo-file-input"
+                      onChange={handleLogoChange}
+                    />
+                    <button
+                      type="button"
+                      className="logo-upload-btn"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {logoFile ? `✓ ${logoFile.name}` : "Choose Logo File"}
+                    </button>
+                    {logoFile && (
+                      <button
+                        type="button"
+                        className="logo-clear-btn"
+                        onClick={() => { setLogoFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* ── Services & Cost ── */}
+            <div className="form-section">
+              <h3>Services &amp; Cost</h3>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label htmlFor="p-costs">Cost Structure <span className="required-star">*</span></label>
+                  <select
+                    id="p-costs"
+                    value={form.costs}
+                    onChange={(e) => setForm((f) => ({ ...f, costs: e.target.value }))}
+                    className="form-input"
+                  >
+                    <option value="">Select cost type...</option>
+                    {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
+                  </select>
+                </div>
+                <div className="form-field">
+                  <label htmlFor="p-uninsured">Accepts Uninsured Patients?</label>
+                  <select
+                    id="p-uninsured"
+                    value={form.uninsured}
+                    onChange={(e) => setForm((f) => ({ ...f, uninsured: e.target.value }))}
+                    className="form-input"
+                  >
+                    <option value="">Unknown</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="No - Sliding Scale">No - Sliding Scale</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-field full-width">
+                <label>Support Options <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
+                <div className="support-checkboxes">
+                  {SUPPORT_OPTIONS.map((opt) => (
+                    <label key={opt} className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={form.supportOptions.includes(opt)}
+                        onChange={() => handleSupportToggle(opt)}
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── About ── */}
             <div className="form-section">
               <h3>About Your Organization</h3>
               <div className="form-field full-width">

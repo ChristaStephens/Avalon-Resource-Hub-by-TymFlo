@@ -166,7 +166,7 @@ export async function fetchAllResources(forceRefresh = false): Promise<Resource[
   return all;
 }
 
-export async function createResource(fields: Record<string, unknown>): Promise<void> {
+export async function createResource(fields: Record<string, unknown>): Promise<string> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}`;
 
@@ -183,7 +183,40 @@ export async function createResource(fields: Record<string, unknown>): Promise<v
     throw new Error(`Failed to create record: ${response.status} ${response.statusText}`);
   }
 
+  const data = await response.json() as { id: string };
   clearCache();
+  return data.id;
+}
+
+export async function uploadLogoAttachment(recordId: string, file: File): Promise<void> {
+  const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
+  // Encode file to base64
+  const arrayBuffer = await file.arrayBuffer();
+  const bytes = new Uint8Array(arrayBuffer);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  const base64 = btoa(binary);
+
+  const url = `https://content.airtable.com/v0/${BASE_ID}/${recordId}/Logo/uploadAttachment`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${writePAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contentType: file.type || "image/png",
+      filename: file.name,
+      file: base64,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Logo upload failed: ${response.status} ${detail || response.statusText}`);
+  }
 }
 
 export async function approveResource(resource: Resource): Promise<void> {
