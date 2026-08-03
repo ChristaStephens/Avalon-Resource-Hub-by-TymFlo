@@ -2,6 +2,7 @@ import { Router, Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import PublicHub from "@/pages/PublicHub";
 import StaffArea from "@/pages/StaffArea";
+import ProviderApplication from "@/pages/ProviderApplication";
 import NotFound from "@/pages/not-found";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -12,6 +13,7 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={PublicHub} />
         <Route path="/staff" component={StaffArea} />
+        <Route path="/become-a-provider" component={ProviderApplication} />
         <Route component={NotFound} />
       </Switch>
     </Router>

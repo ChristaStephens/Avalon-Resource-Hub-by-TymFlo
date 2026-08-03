@@ -20,6 +20,12 @@ export function Footer() {
             ← Back to Avalon
           </a>
           <button
+            onClick={() => navigate("/become-a-provider")}
+            className="footer-provider-btn"
+          >
+            Become a Resource Provider
+          </button>
+          <button
             onClick={() => navigate("/staff")}
             className="footer-staff-link"
           >

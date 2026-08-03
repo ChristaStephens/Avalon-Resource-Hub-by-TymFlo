@@ -6,6 +6,8 @@ import {
   removeResource,
   restoreResource,
   fetchAllResources,
+  fetchPendingApplications,
+  approveResource,
   clearCache,
   AIRTABLE_CONFIGURED,
   Resource,
@@ -64,7 +66,7 @@ export default function StaffArea() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [activeTab, setActiveTab] = useState<"add" | "remove">("add");
+  const [activeTab, setActiveTab] = useState<"add" | "remove" | "approve">("add");
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -77,6 +79,12 @@ export default function StaffArea() {
   const [confirmRemove, setConfirmRemove] = useState<string | null>(null);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  // Approve tab state
+  const [pendingApps, setPendingApps] = useState<Resource[]>([]);
+  const [pendingLoading, setPendingLoading] = useState(false);
+  const [pendingError, setPendingError] = useState<string | null>(null);
+  const [approveMessage, setApproveMessage] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,9 +110,39 @@ export default function StaffArea() {
     }
   };
 
+  const loadPendingApps = async () => {
+    setPendingLoading(true);
+    setPendingError(null);
+    try {
+      const data = await fetchPendingApplications();
+      setPendingApps(data);
+    } catch (err) {
+      setPendingError(err instanceof Error ? err.message : "Failed to load pending applications");
+    } finally {
+      setPendingLoading(false);
+    }
+  };
+
+  const handleApprove = async (resource: Resource) => {
+    setActionInProgress(resource.id);
+    setApproveMessage(null);
+    try {
+      await approveResource(resource);
+      setApproveMessage(`✓ "${resource.organization}" has been approved and is now live on the public Resource Hub.`);
+      await loadPendingApps();
+    } catch (err) {
+      setApproveMessage(`Error: ${err instanceof Error ? err.message : "Failed to approve"}`);
+    } finally {
+      setActionInProgress(null);
+    }
+  };
+
   useEffect(() => {
     if (authenticated && activeTab === "remove") {
       loadResources();
+    }
+    if (authenticated && activeTab === "approve") {
+      loadPendingApps();
     }
   }, [authenticated, activeTab]);
 
@@ -301,6 +339,15 @@ export default function StaffArea() {
               >
                 Remove Organization
               </button>
+              <button
+                className={`staff-tab staff-tab--approve ${activeTab === "approve" ? "active" : ""}`}
+                onClick={() => setActiveTab("approve")}
+              >
+                ✓ Approve Organization
+                {pendingApps.length > 0 && (
+                  <span className="approve-tab-badge">{pendingApps.length}</span>
+                )}
+              </button>
             </div>
           </div>
 
@@ -465,6 +512,87 @@ export default function StaffArea() {
                 </div>
               </form>
             </>
+          )}
+
+          {activeTab === "approve" && (
+            <div className="approve-tab">
+              {approveMessage && (
+                <div className={`success-banner`}>
+                  {approveMessage}
+                  <button onClick={() => setApproveMessage(null)} className="dismiss-btn">Dismiss</button>
+                </div>
+              )}
+
+              {pendingError && (
+                <div className="error-banner">
+                  ⚠️ {pendingError}
+                  <button onClick={() => loadPendingApps()} className="dismiss-btn">Retry</button>
+                </div>
+              )}
+
+              {pendingLoading && (
+                <div className="loading-state">
+                  <div className="spinner" />
+                  <p>Loading pending applications...</p>
+                </div>
+              )}
+
+              {!pendingLoading && !pendingError && (
+                <>
+                  <div className="approve-section-header">
+                    <h3 className="remove-section-title">
+                      Pending Applications
+                      <span className="remove-count">{pendingApps.length}</span>
+                    </h3>
+                    <p className="remove-section-desc">
+                      These organizations submitted an application to be listed on the Resource Hub. Review each one and click Approve to make them live.
+                    </p>
+                  </div>
+
+                  {pendingApps.length === 0 ? (
+                    <div className="approve-empty">
+                      <div className="approve-empty-icon">✓</div>
+                      <p>No pending applications — you're all caught up!</p>
+                    </div>
+                  ) : (
+                    <div className="approve-list">
+                      {pendingApps.map((r) => (
+                        <div key={r.id} className="approve-row">
+                          <div className="approve-row-info">
+                            <span className="approve-org-name">{r.organization}</span>
+                            <div className="approve-org-meta">
+                              {r.website && (
+                                <a href={r.website} target="_blank" rel="noopener noreferrer" className="approve-meta-link">
+                                  🌐 {r.website}
+                                </a>
+                              )}
+                              {r.primaryContactEmail && (
+                                <span className="approve-meta-item">✉ {r.primaryContactEmail}</span>
+                              )}
+                              {r.contact && (
+                                <span className="approve-meta-item">👤 {r.contact}</span>
+                              )}
+                            </div>
+                            {r.notes && (
+                              <p className="approve-org-notes">{r.notes}</p>
+                            )}
+                          </div>
+                          <div className="approve-row-actions">
+                            <button
+                              className="approve-btn"
+                              disabled={actionInProgress === r.id}
+                              onClick={() => handleApprove(r)}
+                            >
+                              {actionInProgress === r.id ? "Approving..." : "✓ Approve"}
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           )}
 
           {activeTab === "remove" && (

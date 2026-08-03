@@ -144,9 +144,15 @@ export async function fetchResources(forceRefresh = false): Promise<Resource[]> 
   }
 
   const all = await fetchAll();
-  const active = all.filter((r) => !r.removed);
+  // Only show resources approved by Avalon staff AND not removed
+  const active = all.filter((r) => !r.removed && r.approvedByAvalon);
   setCache(CACHE_KEY, active);
   return active;
+}
+
+export async function fetchPendingApplications(): Promise<Resource[]> {
+  const all = await fetchAll();
+  return all.filter((r) => !r.approvedByAvalon && !r.removed);
 }
 
 export async function fetchAllResources(forceRefresh = false): Promise<Resource[]> {
@@ -175,6 +181,27 @@ export async function createResource(fields: Record<string, unknown>): Promise<v
 
   if (!response.ok) {
     throw new Error(`Failed to create record: ${response.status} ${response.statusText}`);
+  }
+
+  clearCache();
+}
+
+export async function approveResource(resource: Resource): Promise<void> {
+  const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${writePAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fields: { "Approved by Avalon Admin": true } }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Failed to approve resource: ${response.status} ${detail || response.statusText}`);
   }
 
   clearCache();
