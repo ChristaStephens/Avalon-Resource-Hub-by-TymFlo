@@ -53,10 +53,14 @@ export default function PublicHub() {
         const match =
           r.organization.toLowerCase().includes(q) ||
           r.contact.toLowerCase().includes(q) ||
+          r.website.toLowerCase().includes(q) ||
+          r.primaryContactEmail.toLowerCase().includes(q) ||
+          r.secondaryContactEmail.toLowerCase().includes(q) ||
           r.notes.toLowerCase().includes(q) ||
+          r.costs.toLowerCase().includes(q) ||
+          r.uninsured.toLowerCase().includes(q) ||
           r.supportOptions.some((s) => s.toLowerCase().includes(q)) ||
-          r.keywords.some((k) => k.toLowerCase().includes(q)) ||
-          r.costs.toLowerCase().includes(q);
+          r.keywords.some((k) => k.toLowerCase().includes(q));
         if (!match) return false;
       }
       if (selectedSupport && !r.supportOptions.includes(selectedSupport)) return false;
