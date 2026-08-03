@@ -21,6 +21,7 @@ export interface Resource {
   costs: string;
   uninsured: string;
   supportOptions: string[];
+  keywords: string[];
   approvedByAvalon: boolean;
   notes: string;
   removed: boolean;
@@ -71,6 +72,15 @@ function parseRecord(record: Record<string, unknown>): Resource {
     supportOptions = [supportRaw];
   }
 
+  // Parse Keywords field — free-text comma-separated list
+  const keywordsRaw = fields["Keywords"];
+  let keywords: string[] = [];
+  if (typeof keywordsRaw === "string" && keywordsRaw.trim()) {
+    keywords = keywordsRaw.split(",").map((k) => k.trim()).filter(Boolean);
+  } else if (Array.isArray(keywordsRaw)) {
+    keywords = keywordsRaw.map(String).filter(Boolean);
+  }
+
   const attachments = fields["Logo"] as Array<{ url: string }> | undefined;
   const logo = attachments?.[0]?.url;
 
@@ -95,6 +105,7 @@ function parseRecord(record: Record<string, unknown>): Resource {
     costs: String(fields["Costs "] || fields["Costs"] || ""),
     uninsured: String(fields["Uninsured"] || ""),
     supportOptions,
+    keywords,
     approvedByAvalon: !!(fields["Approved by Avalon Admin"] || fields["Approved by Avalon Adm..."]),
     notes,
     removed,

@@ -52,8 +52,10 @@ export default function PublicHub() {
         const q = searchQuery.toLowerCase();
         const match =
           r.organization.toLowerCase().includes(q) ||
+          r.contact.toLowerCase().includes(q) ||
           r.notes.toLowerCase().includes(q) ||
           r.supportOptions.some((s) => s.toLowerCase().includes(q)) ||
+          r.keywords.some((k) => k.toLowerCase().includes(q)) ||
           r.costs.toLowerCase().includes(q);
         if (!match) return false;
       }
