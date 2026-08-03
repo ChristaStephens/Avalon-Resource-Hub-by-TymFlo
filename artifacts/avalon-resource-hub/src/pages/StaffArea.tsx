@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SupportOptionPicker } from "@/components/SupportOptionPicker";
 import {
   createResource,
   removeResource,
@@ -22,90 +23,6 @@ async function sha256(str: string): Promise<string> {
     .join("");
 }
 
-const SUPPORT_OPTIONS = [
-  "Abortion Support",
-  "Accepts Medicaid",
-  "Accepts Private Insurance",
-  "Baby Care Supplies",
-  "Behavioral",
-  "Black Provider",
-  "Breastfeeding Education",
-  "Carseat Checks",
-  "Childbirth Education",
-  "Childcare",
-  "Children Allowed at Appointment",
-  "Chronic Care",
-  "Contraception",
-  "Dental",
-  "Diabetes Education",
-  "Diagnostic Ultrasound",
-  "Family Planning",
-  "Fatherhood Support",
-  "Fatherhood Support Group - Cost",
-  "Fatherhood Support Group - Free",
-  "Fertility Services",
-  "Fetal Care Services",
-  "Gender Affirming Care",
-  "General Pediatrics",
-  "Genetic Counseling",
-  "Grief and Loss Mental Health Support",
-  "Grief/Loss",
-  "High Risk Pregnancy",
-  "HIV Testing",
-  "Housing",
-  "In-Person Session",
-  "Infant Care - Pediatrics",
-  "Infant CPR Training",
-  "Infertility",
-  "Labor and Delivery",
-  "Legal",
-  "LGBTQIA + Affirming Provider",
-  "Live Birth",
-  "Loss Support Group",
-  "Maternity Care - Obstetrics",
-  "Medication Management",
-  "Mental Health Support",
-  "Mentorship",
-  "Motherhood Support",
-  "Motherhood Support Group - Cost",
-  "Motherhood Support Group - Free",
-  "Neonatal Intensive Care",
-  "Newborn Care",
-  "Newborn Education",
-  "Nutrition Education",
-  "OB Triage + Emergency Services",
-  "Offers Sliding Scale",
-  "Pap Smears",
-  "Parenting Education",
-  "Parenting Support Groups",
-  "Pediatric Emergency Services",
-  "Pediatric Specialists",
-  "Pediatric Surgeons",
-  "Perinatal Mental Health",
-  "Postpartum Doula Support",
-  "Postpartum Education",
-  "Pregnancy Confirmations",
-  "Pregnancy Fitness Classes",
-  "Pregnancy Tests",
-  "Prenatal + Birth Doula Support",
-  "Prenatal Care",
-  "Prenatal/Postpartum Yoga",
-  "Pro-bono Mental Health",
-  "Psychiatric Evaluation",
-  "Psychological Evaluation",
-  "Reproductive Health - Gynecology",
-  "Safe Sleep Education",
-  "Spanish Speaking Provider",
-  "STI Testing",
-  "Telehealth Session",
-  "Termination",
-  "Therapy",
-  "Transportation",
-  "Trauma-Informed",
-  "Ultrasounds",
-  "Undocumented",
-  "Uninsured",
-];
 
 const COST_OPTIONS = [
   "Free - No costs ",
@@ -532,18 +449,10 @@ export default function StaffArea() {
 
                   <div className="form-field full-width">
                     <label>Support Options <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
-                    <div className="support-checkboxes">
-                      {SUPPORT_OPTIONS.map((opt) => (
-                        <label key={opt} className="checkbox-label">
-                          <input
-                            type="checkbox"
-                            checked={form.supportOptions.includes(opt)}
-                            onChange={() => handleSupportToggle(opt)}
-                          />
-                          <span>{opt}</span>
-                        </label>
-                      ))}
-                    </div>
+                    <SupportOptionPicker
+                      selected={form.supportOptions}
+                      onChange={handleSupportToggle}
+                    />
                   </div>
                 </div>
 
