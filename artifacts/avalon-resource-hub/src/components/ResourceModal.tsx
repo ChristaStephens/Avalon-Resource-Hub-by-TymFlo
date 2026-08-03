@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "wouter";
 import { Resource } from "@/lib/airtable";
 
 interface ResourceModalProps {
@@ -22,12 +23,19 @@ export function ResourceModal({ resource, onClose }: ResourceModalProps) {
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  const [, navigate] = useLocation();
+
   const handleWebsiteClick = () => {
     if (resource.website) {
       let url = resource.website;
       if (!url.startsWith("http")) url = "https://" + url;
       window.open(url, "_blank", "noopener,noreferrer");
     }
+  };
+
+  const handleRequestEdit = () => {
+    onClose();
+    navigate(`/request-edit?id=${encodeURIComponent(resource.id)}`);
   };
 
   return (
@@ -129,14 +137,17 @@ export function ResourceModal({ resource, onClose }: ResourceModalProps) {
           )}
         </div>
 
-        {/* Footer — Visit Website CTA */}
-        {resource.website && (
-          <div className="modal-footer">
+        {/* Footer — Visit Website CTA + request edit link */}
+        <div className="modal-footer">
+          {resource.website && (
             <button onClick={handleWebsiteClick} className="visit-website-btn">
               Visit Website →
             </button>
-          </div>
-        )}
+          )}
+          <button className="modal-request-edit-link" onClick={handleRequestEdit}>
+            Is this your organization?&nbsp; Request an update to this listing →
+          </button>
+        </div>
       </div>
     </div>
   );

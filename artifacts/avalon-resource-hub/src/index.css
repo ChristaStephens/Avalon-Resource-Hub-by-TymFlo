@@ -1171,6 +1171,24 @@ a:hover { text-decoration: underline; }
   border-top: 1px solid var(--avalon-light-gray);
   flex-shrink: 0;
 }
+.modal-request-edit-link {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--avalon-warm-gray);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-main);
+  padding: 0;
+  transition: color 0.15s;
+  width: 100%;
+}
+.modal-request-edit-link:hover {
+  color: var(--avalon-teal);
+  text-decoration: underline;
+}
 
 /* ===== SUPPORT OPTION PICKER (accordion groups) ===== */
 .support-option-picker {
