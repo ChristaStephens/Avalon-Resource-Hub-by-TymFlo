@@ -1514,6 +1514,93 @@ a:hover { text-decoration: underline; }
   margin: 0 auto 12px;
 }
 
+/* ===== APPROVAL EMAIL PANEL ===== */
+.approval-email-panel {
+  background: #edf7f4;
+  border: 1.5px solid #a9dfbf;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.approval-email-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #1e6e4a;
+  font-size: 14px;
+}
+.approval-email-check {
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.approval-email-sub {
+  font-weight: 400;
+  color: #2d6a4f;
+}
+.approval-email-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.approval-email-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--avalon-charcoal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.approval-email-copy-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.approval-email-code {
+  flex: 1;
+  background: white;
+  border: 1px solid #c3e6cb;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--avalon-teal-dark);
+  word-break: break-all;
+  min-width: 0;
+}
+.approval-email-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #c3e6cb;
+  border-radius: var(--radius-md);
+  font-family: monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--avalon-charcoal);
+  background: white;
+  resize: vertical;
+  outline: none;
+}
+.approval-copy-btn {
+  padding: 7px 16px;
+  background: var(--avalon-teal);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  align-self: flex-end;
+}
+.approval-copy-btn:hover { background: var(--avalon-teal-dark); }
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 640px) {
   .header-inner { padding: 10px 16px; }

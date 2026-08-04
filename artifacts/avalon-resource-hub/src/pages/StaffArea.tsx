@@ -69,6 +69,8 @@ export default function StaffArea() {
   const [pendingLoading, setPendingLoading] = useState(false);
   const [pendingError, setPendingError] = useState<string | null>(null);
   const [approveMessage, setApproveMessage] = useState<string | null>(null);
+  const [lastApproved, setLastApproved] = useState<Resource | null>(null);
+  const [copiedField, setCopiedField] = useState<"link" | "email" | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,15 +112,53 @@ export default function StaffArea() {
   const handleApprove = async (resource: Resource) => {
     setActionInProgress(resource.id);
     setApproveMessage(null);
+    setLastApproved(null);
     try {
       await approveResource(resource);
-      setApproveMessage(`✓ "${resource.organization}" has been approved and is now live on the public Resource Hub.`);
+      setLastApproved(resource);
       await loadPendingApps();
     } catch (err) {
       setApproveMessage(`Error: ${err instanceof Error ? err.message : "Failed to approve"}`);
     } finally {
       setActionInProgress(null);
     }
+  };
+
+  const getEditUrl = (resource: Resource) => {
+    const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+    return `${window.location.origin}${base}/request-edit?id=${encodeURIComponent(resource.id)}`;
+  };
+
+  const getEmailTemplate = (resource: Resource) => {
+    const editUrl = getEditUrl(resource);
+    return [
+      `Subject: Your listing on the Avalon Resource Hub has been approved`,
+      ``,
+      `Hi ${resource.contact || "there"},`,
+      ``,
+      `Great news — ${resource.organization} is now live on the Avalon Resource Hub! Survivors in the Detroit area can find your organization at:`,
+      `https://avalonhealingcenter.org/resource-hub`,
+      ``,
+      `If your information ever changes — contact details, services offered, costs, or anything else — you can request an update using the private link below:`,
+      ``,
+      `${editUrl}`,
+      ``,
+      `Just click the link, update any fields that need changing, and submit. Your request will go to Avalon staff for review. We'll approve and apply the changes within a few business days — nothing goes live without our team checking it first.`,
+      ``,
+      `Please keep this link private, as it's specific to your listing.`,
+      ``,
+      `Thank you for being part of our network of resources for survivors.`,
+      ``,
+      `Warmly,`,
+      `The Avalon Healing Center Team`,
+    ].join("\n");
+  };
+
+  const handleCopy = (text: string, field: "link" | "email") => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    });
   };
 
   useEffect(() => {
@@ -492,8 +532,50 @@ export default function StaffArea() {
 
           {activeTab === "approve" && (
             <div className="approve-tab">
+              {lastApproved && (
+                <div className="approval-email-panel">
+                  <div className="approval-email-header">
+                    <span className="approval-email-check">✓</span>
+                    <div>
+                      <strong>"{lastApproved.organization}" is now live.</strong>
+                      <span className="approval-email-sub"> Send the provider their edit link using the email template below.</span>
+                    </div>
+                    <button className="dismiss-btn" onClick={() => setLastApproved(null)}>Dismiss</button>
+                  </div>
+
+                  <div className="approval-email-row">
+                    <label className="approval-email-label">Edit link (private — for this org only)</label>
+                    <div className="approval-email-copy-row">
+                      <code className="approval-email-code">{getEditUrl(lastApproved)}</code>
+                      <button
+                        className="approval-copy-btn"
+                        onClick={() => handleCopy(getEditUrl(lastApproved), "link")}
+                      >
+                        {copiedField === "link" ? "✓ Copied" : "Copy link"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="approval-email-row">
+                    <label className="approval-email-label">Ready-to-send email — paste into your email client</label>
+                    <textarea
+                      className="approval-email-textarea"
+                      readOnly
+                      rows={18}
+                      value={getEmailTemplate(lastApproved)}
+                    />
+                    <button
+                      className="approval-copy-btn"
+                      onClick={() => handleCopy(getEmailTemplate(lastApproved), "email")}
+                    >
+                      {copiedField === "email" ? "✓ Copied" : "Copy email"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {approveMessage && (
-                <div className={`success-banner`}>
+                <div className={`error-banner`}>
                   {approveMessage}
                   <button onClick={() => setApproveMessage(null)} className="dismiss-btn">Dismiss</button>
                 </div>
