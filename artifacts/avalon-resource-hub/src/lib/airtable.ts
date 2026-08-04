@@ -117,7 +117,7 @@ function parseRecord(record: Record<string, unknown>): Resource {
     primaryContactEmail: String(fields["Primary Contact Email"] || ""),
     secondaryContactEmail: String(fields["Secondary Contact Email"] || ""),
     costs: (() => {
-      const raw = fields["Costs "] ?? fields["Costs"];
+      const raw = fields["Costs"] ?? fields["Costs "];
       if (Array.isArray(raw)) return raw.map(String).filter(Boolean);
       if (typeof raw === "string" && raw.trim()) return [raw.trim()];
       return [];

@@ -118,7 +118,7 @@ export default function RequestEdit() {
       if (form.website) payload["Website"] = form.website;
       if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
       if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
-      if (form.costs.length > 0) payload["Costs "] = form.costs;
+      if (form.costs.length > 0) payload["Costs"] = form.costs;
       if (form.uninsured) payload["Uninsured"] = form.uninsured;
 
       await createResource(payload);

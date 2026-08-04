@@ -232,7 +232,7 @@ export default function StaffArea() {
         Website: editForm.website || null,
         "Primary Contact Email": editForm.primaryEmail || null,
         "Secondary Contact Email": editForm.secondaryEmail || null,
-        "Costs ": editForm.costs.length > 0 ? editForm.costs : null,
+        "Costs": editForm.costs.length > 0 ? editForm.costs : null,
         Uninsured: editForm.uninsured || null, // select field — same
         NOTES: editForm.notes || null,
       };
@@ -302,7 +302,7 @@ export default function StaffArea() {
       const payload: Record<string, unknown> = {
         Organization: form.organization,
         "Support Options": form.supportOptions,
-        "Costs ": form.costs.length > 0 ? form.costs : null,
+        "Costs": form.costs.length > 0 ? form.costs : null,
         "Approved by Avalon Admin": true,
       };
       if (form.contact) payload["Contact"] = form.contact;

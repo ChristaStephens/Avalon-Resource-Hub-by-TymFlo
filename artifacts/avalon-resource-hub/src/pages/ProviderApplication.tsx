@@ -77,7 +77,7 @@ export default function ProviderApplication() {
       const payload: Record<string, unknown> = {
         Organization: form.organization,
         "Support Options": form.supportOptions,
-        "Costs ": form.costs.length > 0 ? form.costs : null,
+        "Costs": form.costs.length > 0 ? form.costs : null,
         "Approved by Avalon Admin": false,
       };
       if (form.contact) payload["Contact"] = form.contact;
