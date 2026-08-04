@@ -10,6 +10,7 @@ const CACHE_TTL = 60 * 60 * 1000;
 
 // Legacy prefix used before the dedicated checkbox column existed
 const LEGACY_REMOVED_PREFIX = "[REMOVED] ";
+const EDIT_REQUEST_PREFIX = "EDIT REQUEST for:";
 
 export interface Resource {
   id: string;
@@ -26,6 +27,7 @@ export interface Resource {
   notes: string;
   removed: boolean;
   legacyRemoved: boolean;
+  isEditRequest: boolean;
   logo?: string;
 }
 
@@ -95,6 +97,10 @@ function parseRecord(record: Record<string, unknown>): Resource {
   // Strip legacy prefix from displayed notes
   const notes = removedByLegacy ? rawNotes.slice(LEGACY_REMOVED_PREFIX.length) : rawNotes;
 
+  // Detect edit requests by their NOTES prefix — used to exclude them from
+  // the public hub even if the Airtable default auto-approves the record
+  const isEditRequest = rawNotes.startsWith(EDIT_REQUEST_PREFIX);
+
   return {
     id: record.id as string,
     organization: String(fields["Organization"] || ""),
@@ -110,6 +116,7 @@ function parseRecord(record: Record<string, unknown>): Resource {
     notes,
     removed,
     legacyRemoved: removedByLegacy,
+    isEditRequest,
     logo,
   };
 }
@@ -144,8 +151,10 @@ export async function fetchResources(forceRefresh = false): Promise<Resource[]> 
   }
 
   const all = await fetchAll();
-  // Only show resources approved by Avalon staff AND not removed
-  const active = all.filter((r) => !r.removed && r.approvedByAvalon);
+  // Only show resources approved by Avalon staff, not removed, and not edit requests
+  // Edit requests are excluded by NOTES prefix regardless of Airtable's approval status,
+  // because Airtable's default checkbox value may auto-approve new records.
+  const active = all.filter((r) => !r.removed && r.approvedByAvalon && !r.isEditRequest);
   setCache(CACHE_KEY, active);
   return active;
 }
