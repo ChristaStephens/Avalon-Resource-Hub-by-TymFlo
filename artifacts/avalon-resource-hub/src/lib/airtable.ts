@@ -45,7 +45,15 @@ function getCache(key: string): Resource[] | null {
       localStorage.removeItem(key);
       return null;
     }
-    return entry.data;
+    // Normalize costs to string[] — stale cache entries may have it as a string
+    return entry.data.map((r) => ({
+      ...r,
+      costs: Array.isArray(r.costs)
+        ? r.costs
+        : typeof r.costs === "string" && (r.costs as string).trim()
+          ? [(r.costs as string).trim()]
+          : [],
+    }));
   } catch {
     return null;
   }
