@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { SupportOptionPicker } from "@/components/SupportOptionPicker";
 import { createResource, uploadLogoAttachment, AIRTABLE_CONFIGURED } from "@/lib/airtable";
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT || "";
+const NOTIFY_ENDPOINT = "/api/notify";
 
 
 const COST_OPTIONS = [
@@ -96,41 +96,30 @@ export default function ProviderApplication() {
         });
       }
 
-      // 3. Send email notification via Formspree (gracefully skipped if not configured)
-      if (FORMSPREE_ENDPOINT) {
-        await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            subject: `New Provider Application: ${form.organization}`,
-            organization: form.organization,
-            contact: form.contact || "(not provided)",
-            website: form.website,
-            email: form.primaryEmail,
-            secondaryEmail: form.secondaryEmail || "(not provided)",
-            costs: form.costs.join(", "),
-            uninsured: form.uninsured || "(not specified)",
-            supportOptions: form.supportOptions.join(", "),
-            notes: form.notes || "(none)",
-            message: [
-              "A new organization has applied to be listed on the Avalon Resource Hub and is awaiting your review in the Staff Area.",
-              "",
-              `Organization: ${form.organization}`,
-              `Contact: ${form.contact || "(not provided)"}`,
-              `Website: ${form.website}`,
-              `Primary Email: ${form.primaryEmail}`,
-              `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
-              `Cost Structure: ${form.costs.join(", ")}`,
-              `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
-              `Support Options: ${form.supportOptions.join(", ")}`,
-              `Notes: ${form.notes || "(none)"}`,
-              `Logo uploaded: ${logoFile ? "Yes" : "No"}`,
-            ].join("\n"),
-          }),
-        }).catch(() => {
-          // Email failure is non-blocking
-        });
-      }
+      // 3. Send email notification (gracefully non-blocking)
+      await fetch(NOTIFY_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: `New Provider Application: ${form.organization}`,
+          message: [
+            "A new organization has applied to be listed on the Avalon Resource Hub and is awaiting your review in the Staff Area.",
+            "",
+            `Organization: ${form.organization}`,
+            `Contact: ${form.contact || "(not provided)"}`,
+            `Website: ${form.website}`,
+            `Primary Email: ${form.primaryEmail}`,
+            `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
+            `Cost Structure: ${form.costs.join(", ")}`,
+            `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
+            `Support Options: ${form.supportOptions.join(", ")}`,
+            `Notes: ${form.notes || "(none)"}`,
+            `Logo uploaded: ${logoFile ? "Yes" : "No"}`,
+          ].join("\n"),
+        }),
+      }).catch(() => {
+        // Email failure is non-blocking
+      });
 
       setSubmitted(true);
       setForm(EMPTY_FORM);

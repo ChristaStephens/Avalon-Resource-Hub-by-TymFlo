@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 import { SupportOptionPicker } from "@/components/SupportOptionPicker";
 import { fetchResources, createResource, AIRTABLE_CONFIGURED, Resource } from "@/lib/airtable";
 
-const FORMSPREE_ENDPOINT = import.meta.env.VITE_FORMSPREE_ENDPOINT || "";
+const NOTIFY_ENDPOINT = "/api/notify";
 
 const COST_OPTIONS = [
   "Free - No costs ",
@@ -123,41 +123,30 @@ export default function RequestEdit() {
 
       await createResource(payload);
 
-      // Send email notification via Formspree (gracefully skipped if not configured)
-      if (FORMSPREE_ENDPOINT) {
-        await fetch(FORMSPREE_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify({
-            subject: `Edit Request: ${form.organization}`,
-            organization: form.organization,
-            contact: form.contact || "(not provided)",
-            website: form.website,
-            email: form.primaryEmail,
-            secondaryEmail: form.secondaryEmail || "(not provided)",
-            costs: form.costs.join(", "),
-            uninsured: form.uninsured || "(not specified)",
-            supportOptions: form.supportOptions.join(", "),
-            notes: form.notes || "(none)",
-            message: [
-              `An edit request has been submitted for: ${resource?.organization || form.organization}`,
-              "Please review the updated information below and approve it in the Staff Area.",
-              "",
-              `Organization: ${form.organization}`,
-              `Contact: ${form.contact || "(not provided)"}`,
-              `Website: ${form.website}`,
-              `Primary Email: ${form.primaryEmail}`,
-              `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
-              `Cost Structure: ${form.costs.join(", ")}`,
-              `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
-              `Support Options: ${form.supportOptions.join(", ")}`,
-              `Notes: ${form.notes || "(none)"}`,
-            ].join("\n"),
-          }),
-        }).catch(() => {
-          // Email failure is non-blocking
-        });
-      }
+      // Send email notification (gracefully non-blocking)
+      await fetch(NOTIFY_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          subject: `Edit Request: ${form.organization}`,
+          message: [
+            `An edit request has been submitted for: ${resource?.organization || form.organization}`,
+            "Please review the updated information below and approve it in the Staff Area.",
+            "",
+            `Organization: ${form.organization}`,
+            `Contact: ${form.contact || "(not provided)"}`,
+            `Website: ${form.website}`,
+            `Primary Email: ${form.primaryEmail}`,
+            `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
+            `Cost Structure: ${form.costs.join(", ")}`,
+            `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
+            `Support Options: ${form.supportOptions.join(", ")}`,
+            `Notes: ${form.notes || "(none)"}`,
+          ].join("\n"),
+        }),
+      }).catch(() => {
+        // Email failure is non-blocking
+      });
 
       setSubmitted(true);
     } catch (err) {
