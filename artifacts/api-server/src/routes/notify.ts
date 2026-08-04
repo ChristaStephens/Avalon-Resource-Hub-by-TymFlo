@@ -1,22 +1,8 @@
 import { Router, type IRouter } from "express";
-import nodemailer from "nodemailer";
 
 const router: IRouter = Router();
 
-const GMAIL_USER = process.env["GMAIL_USER"] || "";
-const GMAIL_APP_PASSWORD = process.env["GMAIL_APP_PASSWORD"] || "";
 const NOTIFY_TO_EMAIL = process.env["NOTIFY_TO_EMAIL"] || "";
-
-function createTransporter() {
-  if (!GMAIL_USER || !GMAIL_APP_PASSWORD) return null;
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: GMAIL_USER,
-      pass: GMAIL_APP_PASSWORD,
-    },
-  });
-}
 
 router.post("/notify", async (req, res) => {
   const { subject, message } = req.body as { subject?: string; message?: string };
@@ -26,31 +12,44 @@ router.post("/notify", async (req, res) => {
     return;
   }
 
-  const toEmail = NOTIFY_TO_EMAIL;
-  if (!toEmail) {
-    // Not configured — respond OK so the frontend doesn't surface an error
+  if (!NOTIFY_TO_EMAIL) {
+    // Not configured — respond OK so the frontend never surfaces an error
     res.json({ ok: true, skipped: true, reason: "NOTIFY_TO_EMAIL not configured" });
     return;
   }
 
-  const transporter = createTransporter();
-  if (!transporter) {
-    res.json({ ok: true, skipped: true, reason: "Gmail credentials not configured" });
-    return;
-  }
-
   try {
-    await transporter.sendMail({
-      from: `"Avalon Resource Hub" <${GMAIL_USER}>`,
-      to: toEmail,
-      subject,
-      text: message,
-    });
+    // Formsubmit.co — free, no account, no domain verification required.
+    // The very first submission triggers a one-time "click to activate" email
+    // to NOTIFY_TO_EMAIL; after that, every notification goes straight through.
+    const response = await fetch(
+      `https://formsubmit.co/ajax/${encodeURIComponent(NOTIFY_TO_EMAIL)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: subject,
+          _captcha: "false",
+          // Send the body as a single "message" field so it renders cleanly
+          message,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Formsubmit.co error:", response.status, text);
+      res.status(502).json({ error: "Email service returned an error" });
+      return;
+    }
+
     res.json({ ok: true });
   } catch (err) {
-    // Log but don't expose internal error details
-    console.error("Email send failed:", err);
-    res.status(500).json({ error: "Failed to send email" });
+    console.error("Notify fetch failed:", err);
+    res.status(500).json({ error: "Failed to send notification" });
   }
 });
 
