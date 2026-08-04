@@ -23,7 +23,7 @@ const EMPTY_FORM = {
   website: "",
   primaryEmail: "",
   secondaryEmail: "",
-  costs: "",
+  costs: [] as string[],
   uninsured: "",
   supportOptions: [] as string[],
   notes: "",
@@ -37,6 +37,15 @@ export default function ProviderApplication() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCostToggle = (opt: string) => {
+    setForm((f) => ({
+      ...f,
+      costs: f.costs.includes(opt)
+        ? f.costs.filter((c) => c !== opt)
+        : [...f.costs, opt],
+    }));
+  };
 
   const handleSupportToggle = (opt: string) => {
     setForm((f) => ({
@@ -59,7 +68,7 @@ export default function ProviderApplication() {
     if (!form.organization.trim()) { setError("Organization Name is required."); return; }
     if (!form.website.trim()) { setError("Website URL is required."); return; }
     if (!form.primaryEmail.trim()) { setError("Primary Contact Email is required."); return; }
-    if (!form.costs) { setError("Cost Structure is required."); return; }
+    if (form.costs.length === 0) { setError("Please select at least one Cost Structure option."); return; }
     if (form.supportOptions.length === 0) { setError("Please select at least one Support Option."); return; }
 
     setSubmitting(true);
@@ -68,7 +77,7 @@ export default function ProviderApplication() {
       const payload: Record<string, unknown> = {
         Organization: form.organization,
         "Support Options": form.supportOptions,
-        "Costs ": form.costs,
+        "Costs ": form.costs.length > 0 ? form.costs : null,
         "Approved by Avalon Admin": false,
       };
       if (form.contact) payload["Contact"] = form.contact;
@@ -99,7 +108,7 @@ export default function ProviderApplication() {
             website: form.website,
             email: form.primaryEmail,
             secondaryEmail: form.secondaryEmail || "(not provided)",
-            costs: form.costs,
+            costs: form.costs.join(", "),
             uninsured: form.uninsured || "(not specified)",
             supportOptions: form.supportOptions.join(", "),
             notes: form.notes || "(none)",
@@ -111,7 +120,7 @@ export default function ProviderApplication() {
               `Website: ${form.website}`,
               `Primary Email: ${form.primaryEmail}`,
               `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
-              `Cost Structure: ${form.costs}`,
+              `Cost Structure: ${form.costs.join(", ")}`,
               `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
               `Support Options: ${form.supportOptions.join(", ")}`,
               `Notes: ${form.notes || "(none)"}`,
@@ -291,16 +300,19 @@ export default function ProviderApplication() {
               <h3>Services &amp; Cost</h3>
               <div className="form-grid">
                 <div className="form-field">
-                  <label htmlFor="p-costs">Cost Structure <span className="required-star">*</span></label>
-                  <select
-                    id="p-costs"
-                    value={form.costs}
-                    onChange={(e) => setForm((f) => ({ ...f, costs: e.target.value }))}
-                    className="form-input"
-                  >
-                    <option value="">Select cost type...</option>
-                    {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
-                  </select>
+                  <label>Cost Structure <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
+                  <div className="cost-option-list">
+                    {COST_OPTIONS.map((o) => (
+                      <label key={o} className="cost-option-item">
+                        <input
+                          type="checkbox"
+                          checked={form.costs.includes(o)}
+                          onChange={() => handleCostToggle(o)}
+                        />
+                        <span>{o.trim()}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
                 <div className="form-field">
                   <label htmlFor="p-uninsured">Accepts Uninsured Patients?</label>

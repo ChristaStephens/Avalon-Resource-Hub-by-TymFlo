@@ -1514,6 +1514,32 @@ a:hover { text-decoration: underline; }
   margin: 0 auto 12px;
 }
 
+/* ===== COST OPTION CHECKBOXES ===== */
+.cost-option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.cost-option-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+.cost-option-item input[type="checkbox"] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--avalon-teal);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.cost-option-item span { flex: 1; }
+
 /* ===== EDIT TAB ===== */
 .edit-tab { display: flex; flex-direction: column; gap: 0; }
 .edit-select-btn {

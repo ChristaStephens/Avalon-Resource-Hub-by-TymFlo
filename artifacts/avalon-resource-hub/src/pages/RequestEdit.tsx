@@ -32,7 +32,7 @@ export default function RequestEdit() {
     website: "",
     primaryEmail: "",
     secondaryEmail: "",
-    costs: "",
+    costs: [] as string[],
     uninsured: "",
     supportOptions: [] as string[],
     notes: "",
@@ -65,7 +65,7 @@ export default function RequestEdit() {
           website: found.website,
           primaryEmail: found.primaryContactEmail,
           secondaryEmail: found.secondaryContactEmail,
-          costs: found.costs,
+          costs: Array.isArray(found.costs) ? [...found.costs] : [],
           uninsured: found.uninsured,
           supportOptions: [...found.supportOptions],
           notes: found.notes,
@@ -77,6 +77,15 @@ export default function RequestEdit() {
         setLoading(false);
       });
   }, [recordId]);
+
+  const handleCostToggle = (opt: string) => {
+    setForm((f) => ({
+      ...f,
+      costs: f.costs.includes(opt)
+        ? f.costs.filter((c) => c !== opt)
+        : [...f.costs, opt],
+    }));
+  };
 
   const handleSupportToggle = (opt: string) => {
     setForm((f) => ({
@@ -109,7 +118,7 @@ export default function RequestEdit() {
       if (form.website) payload["Website"] = form.website;
       if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
       if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
-      if (form.costs) payload["Costs "] = form.costs;
+      if (form.costs.length > 0) payload["Costs "] = form.costs;
       if (form.uninsured) payload["Uninsured"] = form.uninsured;
 
       await createResource(payload);
@@ -126,7 +135,7 @@ export default function RequestEdit() {
             website: form.website,
             email: form.primaryEmail,
             secondaryEmail: form.secondaryEmail || "(not provided)",
-            costs: form.costs,
+            costs: form.costs.join(", "),
             uninsured: form.uninsured || "(not specified)",
             supportOptions: form.supportOptions.join(", "),
             notes: form.notes || "(none)",
@@ -139,7 +148,7 @@ export default function RequestEdit() {
               `Website: ${form.website}`,
               `Primary Email: ${form.primaryEmail}`,
               `Secondary Email: ${form.secondaryEmail || "(not provided)"}`,
-              `Cost Structure: ${form.costs}`,
+              `Cost Structure: ${form.costs.join(", ")}`,
               `Accepts Uninsured: ${form.uninsured || "(not specified)"}`,
               `Support Options: ${form.supportOptions.join(", ")}`,
               `Notes: ${form.notes || "(none)"}`,
@@ -292,16 +301,19 @@ export default function RequestEdit() {
                   <h3>Services &amp; Cost</h3>
                   <div className="form-grid">
                     <div className="form-field">
-                      <label htmlFor="re-costs">Cost Structure</label>
-                      <select
-                        id="re-costs"
-                        value={form.costs}
-                        onChange={(e) => setForm((f) => ({ ...f, costs: e.target.value }))}
-                        className="form-input"
-                      >
-                        <option value="">Select cost type...</option>
-                        {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
-                      </select>
+                      <label>Cost Structure <span className="label-hint">select all that apply</span></label>
+                      <div className="cost-option-list">
+                        {COST_OPTIONS.map((o) => (
+                          <label key={o} className="cost-option-item">
+                            <input
+                              type="checkbox"
+                              checked={form.costs.includes(o)}
+                              onChange={() => handleCostToggle(o)}
+                            />
+                            <span>{o.trim()}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                     <div className="form-field">
                       <label htmlFor="re-uninsured">Accepts Uninsured Patients?</label>

@@ -34,9 +34,11 @@ export function ResourceCard({ resource, onCardClick }: ResourceCardProps) {
       </div>
 
       <div className="resource-card-body">
-        {resource.costs && (
+        {(resource.costs.length > 0 || resource.uninsured === "Yes") && (
           <div className="resource-badge-row">
-            <span className="resource-badge cost-badge">{resource.costs}</span>
+            {resource.costs.map((c) => (
+              <span key={c} className="resource-badge cost-badge">{c.trim()}</span>
+            ))}
             {resource.uninsured === "Yes" && (
               <span className="resource-badge uninsured-badge">Accepts Uninsured</span>
             )}

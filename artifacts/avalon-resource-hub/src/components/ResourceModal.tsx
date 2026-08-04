@@ -67,9 +67,9 @@ export function ResourceModal({ resource, onClose }: ResourceModalProps) {
           {(resource.costs || resource.uninsured === "Yes") && (
             <div className="modal-section">
               <div className="resource-badge-row">
-                {resource.costs && (
-                  <span className="resource-badge cost-badge">{resource.costs}</span>
-                )}
+                {resource.costs.map((c) => (
+                  <span key={c} className="resource-badge cost-badge">{c.trim()}</span>
+                ))}
                 {resource.uninsured === "Yes" && (
                   <span className="resource-badge uninsured-badge">Accepts Uninsured</span>
                 )}

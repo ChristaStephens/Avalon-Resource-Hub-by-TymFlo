@@ -44,7 +44,7 @@ export default function PublicHub() {
 
   const costOptions = useMemo(() => {
     const all = new Set<string>();
-    resources.forEach((r) => { if (r.costs) all.add(r.costs); });
+    resources.forEach((r) => { r.costs.forEach((c) => { if (c) all.add(c); }); });
     return Array.from(all).sort();
   }, [resources]);
 
@@ -59,14 +59,14 @@ export default function PublicHub() {
           r.primaryContactEmail.toLowerCase().includes(q) ||
           r.secondaryContactEmail.toLowerCase().includes(q) ||
           r.notes.toLowerCase().includes(q) ||
-          r.costs.toLowerCase().includes(q) ||
+          r.costs.some((c) => c.toLowerCase().includes(q)) ||
           r.uninsured.toLowerCase().includes(q) ||
           r.supportOptions.some((s) => s.toLowerCase().includes(q)) ||
           r.keywords.some((k) => k.toLowerCase().includes(q));
         if (!match) return false;
       }
       if (selectedSupport && !r.supportOptions.includes(selectedSupport)) return false;
-      if (selectedCost && r.costs !== selectedCost) return false;
+      if (selectedCost && !r.costs.includes(selectedCost)) return false;
       if (uninsuredOnly && r.uninsured !== "Yes") return false;
       return true;
     });

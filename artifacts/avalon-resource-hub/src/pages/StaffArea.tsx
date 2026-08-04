@@ -40,7 +40,7 @@ const EMPTY_FORM = {
   website: "",
   primaryEmail: "",
   secondaryEmail: "",
-  costs: "",
+  costs: [] as string[],
   uninsured: "",
   supportOptions: [] as string[],
   notes: "",
@@ -82,7 +82,7 @@ export default function StaffArea() {
     website: "",
     primaryEmail: "",
     secondaryEmail: "",
-    costs: "",
+    costs: [] as string[],
     uninsured: "",
     supportOptions: [] as string[],
     notes: "",
@@ -197,6 +197,15 @@ export default function StaffArea() {
     });
   };
 
+  const handleEditCostToggle = (opt: string) => {
+    setEditForm((f) => ({
+      ...f,
+      costs: f.costs.includes(opt)
+        ? f.costs.filter((c) => c !== opt)
+        : [...f.costs, opt],
+    }));
+  };
+
   const handleEditSupportToggle = (opt: string) => {
     setEditForm((f) => ({
       ...f,
@@ -223,7 +232,7 @@ export default function StaffArea() {
         Website: editForm.website || null,
         "Primary Contact Email": editForm.primaryEmail || null,
         "Secondary Contact Email": editForm.secondaryEmail || null,
-        "Costs ": editForm.costs || null,   // select field — null clears, "" tries to create blank option
+        "Costs ": editForm.costs.length > 0 ? editForm.costs : null,
         Uninsured: editForm.uninsured || null, // select field — same
         NOTES: editForm.notes || null,
       };
@@ -274,8 +283,8 @@ export default function StaffArea() {
       setSubmitError("Primary Contact Email is required.");
       return;
     }
-    if (!form.costs) {
-      setSubmitError("Cost Structure is required.");
+    if (form.costs.length === 0) {
+      setSubmitError("Please select at least one Cost Structure option.");
       return;
     }
     if (form.supportOptions.length === 0) {
@@ -293,7 +302,7 @@ export default function StaffArea() {
       const payload: Record<string, unknown> = {
         Organization: form.organization,
         "Support Options": form.supportOptions,
-        "Costs ": form.costs,
+        "Costs ": form.costs.length > 0 ? form.costs : null,
         "Approved by Avalon Admin": true,
       };
       if (form.contact) payload["Contact"] = form.contact;
@@ -544,16 +553,24 @@ export default function StaffArea() {
                   <h3>Services & Cost</h3>
                   <div className="form-grid">
                     <div className="form-field">
-                      <label htmlFor="costs">Cost Structure <span className="required-star">*</span></label>
-                      <select
-                        id="costs"
-                        value={form.costs}
-                        onChange={(e) => setForm((f) => ({ ...f, costs: e.target.value }))}
-                        className="form-input"
-                      >
-                        <option value="">Select cost type...</option>
-                        {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
-                      </select>
+                      <label>Cost Structure <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
+                      <div className="cost-option-list">
+                        {COST_OPTIONS.map((o) => (
+                          <label key={o} className="cost-option-item">
+                            <input
+                              type="checkbox"
+                              checked={form.costs.includes(o)}
+                              onChange={() => setForm((f) => ({
+                                ...f,
+                                costs: f.costs.includes(o)
+                                  ? f.costs.filter((c) => c !== o)
+                                  : [...f.costs, o],
+                              }))}
+                            />
+                            <span>{o.trim()}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
                     <div className="form-field">
                       <label htmlFor="uninsured">Accepts Uninsured Patients?</label>
@@ -763,16 +780,19 @@ export default function StaffArea() {
                       <h3>Services &amp; Cost</h3>
                       <div className="form-grid">
                         <div className="form-field">
-                          <label htmlFor="e-costs">Cost Structure</label>
-                          <select
-                            id="e-costs"
-                            value={editForm.costs}
-                            onChange={(e) => setEditForm((f) => ({ ...f, costs: e.target.value }))}
-                            className="form-input"
-                          >
-                            <option value="">Select cost type…</option>
-                            {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
-                          </select>
+                          <label>Cost Structure <span className="label-hint">select all that apply</span></label>
+                          <div className="cost-option-list">
+                            {COST_OPTIONS.map((o) => (
+                              <label key={o} className="cost-option-item">
+                                <input
+                                  type="checkbox"
+                                  checked={editForm.costs.includes(o)}
+                                  onChange={() => handleEditCostToggle(o)}
+                                />
+                                <span>{o.trim()}</span>
+                              </label>
+                            ))}
+                          </div>
                         </div>
                         <div className="form-field">
                           <label htmlFor="e-uninsured">Accepts Uninsured Patients?</label>

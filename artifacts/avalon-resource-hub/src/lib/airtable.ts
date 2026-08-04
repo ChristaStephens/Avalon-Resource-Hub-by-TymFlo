@@ -19,7 +19,7 @@ export interface Resource {
   website: string;
   primaryContactEmail: string;
   secondaryContactEmail: string;
-  costs: string;
+  costs: string[];
   uninsured: string;
   supportOptions: string[];
   keywords: string[];
@@ -108,7 +108,12 @@ function parseRecord(record: Record<string, unknown>): Resource {
     website: String(fields["Website"] || ""),
     primaryContactEmail: String(fields["Primary Contact Email"] || ""),
     secondaryContactEmail: String(fields["Secondary Contact Email"] || ""),
-    costs: String(fields["Costs "] || fields["Costs"] || ""),
+    costs: (() => {
+      const raw = fields["Costs "] ?? fields["Costs"];
+      if (Array.isArray(raw)) return raw.map(String).filter(Boolean);
+      if (typeof raw === "string" && raw.trim()) return [raw.trim()];
+      return [];
+    })(),
     uninsured: String(fields["Uninsured"] || ""),
     supportOptions,
     keywords,
