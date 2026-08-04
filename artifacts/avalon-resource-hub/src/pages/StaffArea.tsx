@@ -219,13 +219,13 @@ export default function StaffArea() {
       const fields: Record<string, unknown> = {
         Organization: editForm.organization,
         "Support Options": editForm.supportOptions,
-        Contact: editForm.contact || "",
-        Website: editForm.website || "",
-        "Primary Contact Email": editForm.primaryEmail || "",
-        "Secondary Contact Email": editForm.secondaryEmail || "",
-        "Costs ": editForm.costs || "",
-        Uninsured: editForm.uninsured || "",
-        NOTES: editForm.notes || "",
+        Contact: editForm.contact || null,
+        Website: editForm.website || null,
+        "Primary Contact Email": editForm.primaryEmail || null,
+        "Secondary Contact Email": editForm.secondaryEmail || null,
+        "Costs ": editForm.costs || null,   // select field — null clears, "" tries to create blank option
+        Uninsured: editForm.uninsured || null, // select field — same
+        NOTES: editForm.notes || null,
       };
       await updateResource(editSelected.id, fields);
       setEditSuccess(`"${editForm.organization}" has been updated successfully.`);
