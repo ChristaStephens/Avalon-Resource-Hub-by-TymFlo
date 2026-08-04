@@ -230,6 +230,28 @@ export async function uploadLogoAttachment(recordId: string, file: File): Promis
   }
 }
 
+export async function updateResource(resourceId: string, fields: Record<string, unknown>): Promise<void> {
+  const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resourceId}`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${writePAT}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fields }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+    const msg = detail?.error?.message || response.statusText;
+    throw new Error(`Failed to update record: ${response.status} — ${msg}`);
+  }
+
+  clearCache();
+}
+
 export async function approveResource(resource: Resource): Promise<void> {
   const writePAT = import.meta.env.VITE_AIRTABLE_WRITE_PAT || PAT;
   const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}/${resource.id}`;

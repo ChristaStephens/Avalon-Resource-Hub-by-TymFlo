@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { SupportOptionPicker } from "@/components/SupportOptionPicker";
 import {
   createResource,
+  updateResource,
   removeResource,
   restoreResource,
   fetchAllResources,
@@ -50,7 +51,7 @@ export default function StaffArea() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [activeTab, setActiveTab] = useState<"add" | "remove" | "approve">("add");
+  const [activeTab, setActiveTab] = useState<"add" | "edit" | "remove" | "approve">("add");
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -71,6 +72,24 @@ export default function StaffArea() {
   const [approveMessage, setApproveMessage] = useState<string | null>(null);
   const [lastApproved, setLastApproved] = useState<Resource | null>(null);
   const [copiedField, setCopiedField] = useState<"link" | "email" | null>(null);
+
+  // Edit tab state
+  const [editSelected, setEditSelected] = useState<Resource | null>(null);
+  const [editSearch, setEditSearch] = useState("");
+  const [editForm, setEditForm] = useState({
+    organization: "",
+    contact: "",
+    website: "",
+    primaryEmail: "",
+    secondaryEmail: "",
+    costs: "",
+    uninsured: "",
+    supportOptions: [] as string[],
+    notes: "",
+  });
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [editSuccess, setEditSuccess] = useState<string | null>(null);
+  const [editError, setEditError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,8 +180,67 @@ export default function StaffArea() {
     });
   };
 
+  const handleEditSelect = (resource: Resource) => {
+    setEditSelected(resource);
+    setEditSuccess(null);
+    setEditError(null);
+    setEditForm({
+      organization: resource.organization,
+      contact: resource.contact,
+      website: resource.website,
+      primaryEmail: resource.primaryContactEmail,
+      secondaryEmail: resource.secondaryContactEmail,
+      costs: resource.costs,
+      uninsured: resource.uninsured,
+      supportOptions: [...resource.supportOptions],
+      notes: resource.notes,
+    });
+  };
+
+  const handleEditSupportToggle = (opt: string) => {
+    setEditForm((f) => ({
+      ...f,
+      supportOptions: f.supportOptions.includes(opt)
+        ? f.supportOptions.filter((s) => s !== opt)
+        : [...f.supportOptions, opt],
+    }));
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editSelected) return;
+    setEditError(null);
+
+    if (!editForm.organization.trim()) { setEditError("Organization Name is required."); return; }
+    if (editForm.supportOptions.length === 0) { setEditError("Please select at least one Support Option."); return; }
+
+    setEditSubmitting(true);
+    try {
+      const fields: Record<string, unknown> = {
+        Organization: editForm.organization,
+        "Support Options": editForm.supportOptions,
+        Contact: editForm.contact || "",
+        Website: editForm.website || "",
+        "Primary Contact Email": editForm.primaryEmail || "",
+        "Secondary Contact Email": editForm.secondaryEmail || "",
+        "Costs ": editForm.costs || "",
+        Uninsured: editForm.uninsured || "",
+        NOTES: editForm.notes || "",
+      };
+      await updateResource(editSelected.id, fields);
+      setEditSuccess(`"${editForm.organization}" has been updated successfully.`);
+      setEditSelected(null);
+      setEditSearch("");
+      await loadResources(true);
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : "Failed to save changes.");
+    } finally {
+      setEditSubmitting(false);
+    }
+  };
+
   useEffect(() => {
-    if (authenticated && activeTab === "remove") {
+    if (authenticated && (activeTab === "remove" || activeTab === "edit")) {
       loadResources();
     }
     if (authenticated && activeTab === "approve") {
@@ -358,6 +436,12 @@ export default function StaffArea() {
                 + Add Organization
               </button>
               <button
+                className={`staff-tab ${activeTab === "edit" ? "active" : ""}`}
+                onClick={() => { setActiveTab("edit"); setEditSelected(null); setEditSuccess(null); setEditError(null); }}
+              >
+                ✎ Edit Organization
+              </button>
+              <button
                 className={`staff-tab ${activeTab === "remove" ? "active" : ""}`}
                 onClick={() => setActiveTab("remove")}
               >
@@ -528,6 +612,223 @@ export default function StaffArea() {
                 </div>
               </form>
             </>
+          )}
+
+          {activeTab === "edit" && (
+            <div className="edit-tab">
+              {editSuccess && (
+                <div className="success-banner">
+                  ✓ {editSuccess}
+                  <button onClick={() => setEditSuccess(null)} className="dismiss-btn">Dismiss</button>
+                </div>
+              )}
+
+              {!editSelected ? (
+                <>
+                  <div className="remove-section">
+                    <h3 className="remove-section-title">
+                      Active Organizations
+                      <span className="remove-count">{activeResources.length}</span>
+                    </h3>
+                    <p className="remove-section-desc">
+                      Select an organization to edit its listing directly. Changes save immediately to Airtable and update the public hub within the hour.
+                    </p>
+
+                    {resourcesLoading && (
+                      <div className="loading-state" style={{ padding: "32px 0" }}>
+                        <div className="spinner" />
+                        <p>Loading organizations…</p>
+                      </div>
+                    )}
+
+                    {!resourcesLoading && (
+                      <>
+                        {activeResources.length > 6 && (
+                          <div style={{ marginBottom: 12 }}>
+                            <input
+                              type="text"
+                              className="form-input"
+                              placeholder="Search organizations…"
+                              value={editSearch}
+                              onChange={(e) => setEditSearch(e.target.value)}
+                              style={{ maxWidth: 360 }}
+                            />
+                          </div>
+                        )}
+                        <div className="remove-list">
+                          {activeResources
+                            .filter((r) => !editSearch || r.organization.toLowerCase().includes(editSearch.toLowerCase()))
+                            .map((r) => (
+                              <div key={r.id} className="remove-row">
+                                <div className="remove-row-info">
+                                  <span className="remove-org-name">{r.organization}</span>
+                                  {r.contact && <span className="remove-org-contact">{r.contact}</span>}
+                                </div>
+                                <div className="remove-row-actions">
+                                  <button className="edit-select-btn" onClick={() => handleEditSelect(r)}>
+                                    ✎ Edit
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                        {activeResources.length === 0 && (
+                          <p className="empty-state-small">No active organizations found.</p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ marginBottom: 20 }}>
+                    <button
+                      className="provider-back-link"
+                      onClick={() => { setEditSelected(null); setEditError(null); }}
+                    >
+                      ← Back to organization list
+                    </button>
+                  </div>
+
+                  {editError && (
+                    <div className="error-banner" style={{ marginBottom: 20 }}>
+                      ⚠️ {editError}
+                      <button onClick={() => setEditError(null)} className="dismiss-btn">Dismiss</button>
+                    </div>
+                  )}
+
+                  <div className="form-public-notice" style={{ marginBottom: 20 }}>
+                    ✎ Editing <strong>{editSelected.organization}</strong> — changes save directly to Airtable and will be live on the hub within the hour.
+                  </div>
+
+                  <form onSubmit={handleEditSubmit} className="staff-form">
+                    <div className="form-section">
+                      <h3>Organization Info</h3>
+                      <div className="form-grid">
+                        <div className="form-field">
+                          <label htmlFor="e-org">Organization Name <span className="required-star">*</span></label>
+                          <input
+                            id="e-org"
+                            type="text"
+                            required
+                            value={editForm.organization}
+                            onChange={(e) => setEditForm((f) => ({ ...f, organization: e.target.value }))}
+                            className="form-input"
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="e-contact">Contact Name</label>
+                          <input
+                            id="e-contact"
+                            type="text"
+                            value={editForm.contact}
+                            onChange={(e) => setEditForm((f) => ({ ...f, contact: e.target.value }))}
+                            className="form-input"
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="e-website">Website URL</label>
+                          <input
+                            id="e-website"
+                            type="text"
+                            value={editForm.website}
+                            onChange={(e) => setEditForm((f) => ({ ...f, website: e.target.value }))}
+                            className="form-input"
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="e-email">Primary Contact Email</label>
+                          <input
+                            id="e-email"
+                            type="email"
+                            value={editForm.primaryEmail}
+                            onChange={(e) => setEditForm((f) => ({ ...f, primaryEmail: e.target.value }))}
+                            className="form-input"
+                          />
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="e-email2">Secondary Contact Email</label>
+                          <input
+                            id="e-email2"
+                            type="email"
+                            value={editForm.secondaryEmail}
+                            onChange={(e) => setEditForm((f) => ({ ...f, secondaryEmail: e.target.value }))}
+                            className="form-input"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="form-section">
+                      <h3>Services &amp; Cost</h3>
+                      <div className="form-grid">
+                        <div className="form-field">
+                          <label htmlFor="e-costs">Cost Structure</label>
+                          <select
+                            id="e-costs"
+                            value={editForm.costs}
+                            onChange={(e) => setEditForm((f) => ({ ...f, costs: e.target.value }))}
+                            className="form-input"
+                          >
+                            <option value="">Select cost type…</option>
+                            {COST_OPTIONS.map((o) => <option key={o} value={o}>{o.trim()}</option>)}
+                          </select>
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="e-uninsured">Accepts Uninsured Patients?</label>
+                          <select
+                            id="e-uninsured"
+                            value={editForm.uninsured}
+                            onChange={(e) => setEditForm((f) => ({ ...f, uninsured: e.target.value }))}
+                            className="form-input"
+                          >
+                            <option value="">Unknown</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="No - Sliding Scale">No - Sliding Scale</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="form-field full-width" style={{ marginTop: 16 }}>
+                        <label>Support Options <span className="required-star">*</span> <span className="label-hint">select all that apply</span></label>
+                        <SupportOptionPicker
+                          selected={editForm.supportOptions}
+                          onChange={handleEditSupportToggle}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-section">
+                      <h3>Notes</h3>
+                      <div className="form-field full-width">
+                        <label htmlFor="e-notes">Notes</label>
+                        <textarea
+                          id="e-notes"
+                          value={editForm.notes}
+                          onChange={(e) => setEditForm((f) => ({ ...f, notes: e.target.value }))}
+                          className="form-textarea"
+                          rows={4}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-actions">
+                      <button
+                        type="button"
+                        className="confirm-no-btn"
+                        style={{ padding: "12px 24px", marginRight: 12 }}
+                        onClick={() => { setEditSelected(null); setEditError(null); }}
+                      >
+                        Cancel
+                      </button>
+                      <button type="submit" disabled={editSubmitting} className="submit-btn">
+                        {editSubmitting ? "Saving…" : "Save Changes"}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </div>
           )}
 
           {activeTab === "approve" && (

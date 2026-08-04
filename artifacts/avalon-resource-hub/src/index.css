@@ -1514,6 +1514,23 @@ a:hover { text-decoration: underline; }
   margin: 0 auto 12px;
 }
 
+/* ===== EDIT TAB ===== */
+.edit-tab { display: flex; flex-direction: column; gap: 0; }
+.edit-select-btn {
+  padding: 6px 16px;
+  background: none;
+  border: 1.5px solid var(--avalon-teal);
+  color: var(--avalon-teal);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-main);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.edit-select-btn:hover { background: var(--avalon-teal); color: white; }
+
 /* ===== APPROVAL EMAIL PANEL ===== */
 .approval-email-panel {
   background: #edf7f4;
