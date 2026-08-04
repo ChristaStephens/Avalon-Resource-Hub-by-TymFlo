@@ -180,7 +180,9 @@ export async function createResource(fields: Record<string, unknown>): Promise<s
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to create record: ${response.status} ${response.statusText}`);
+    const detail = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+    const msg = detail?.error?.message || response.statusText;
+    throw new Error(`Failed to create record: ${response.status} — ${msg}`);
   }
 
   const data = await response.json() as { id: string };
