@@ -1403,6 +1403,12 @@ a:hover { text-decoration: underline; }
 /* ===== APPROVE TAB ===== */
 .approve-tab { padding-top: 4px; }
 
+.approve-subsection {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--avalon-border);
+}
+.approve-subsection:last-child { border-bottom: none; }
+
 .approve-section-header { margin-bottom: 20px; }
 
 .staff-tab--approve { position: relative; }

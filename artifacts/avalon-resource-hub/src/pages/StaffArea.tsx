@@ -51,7 +51,7 @@ export default function StaffArea() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [activeTab, setActiveTab] = useState<"add" | "edit" | "remove" | "approve-new" | "approve-edit">("add");
+  const [activeTab, setActiveTab] = useState<"add" | "edit" | "remove" | "approve">("add");
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -268,7 +268,7 @@ export default function StaffArea() {
     if (authenticated && (activeTab === "remove" || activeTab === "edit")) {
       loadResources();
     }
-    if (authenticated && (activeTab === "approve-new" || activeTab === "approve-edit")) {
+    if (authenticated && activeTab === "approve") {
       loadPendingApps();
     }
   }, [authenticated, activeTab]);
@@ -475,21 +475,12 @@ export default function StaffArea() {
                 Remove Organization
               </button>
               <button
-                className={`staff-tab staff-tab--approve ${activeTab === "approve-new" ? "active" : ""}`}
-                onClick={() => { setActiveTab("approve-new"); setLastApproved(null); setApproveMessage(null); }}
+                className={`staff-tab staff-tab--approve ${activeTab === "approve" ? "active" : ""}`}
+                onClick={() => { setActiveTab("approve"); setLastApproved(null); setLastApprovedEdit(null); setApproveMessage(null); }}
               >
-                ✓ Approve New Org
-                {pendingNewOrgs.length > 0 && (
-                  <span className="approve-tab-badge">{pendingNewOrgs.length}</span>
-                )}
-              </button>
-              <button
-                className={`staff-tab staff-tab--approve ${activeTab === "approve-edit" ? "active" : ""}`}
-                onClick={() => { setActiveTab("approve-edit"); setLastApprovedEdit(null); setApproveMessage(null); }}
-              >
-                ✎ Approve Edits
-                {pendingEditRequests.length > 0 && (
-                  <span className="approve-tab-badge">{pendingEditRequests.length}</span>
+                ✓ Approve Organizations
+                {(pendingNewOrgs.length + pendingEditRequests.length) > 0 && (
+                  <span className="approve-tab-badge">{pendingNewOrgs.length + pendingEditRequests.length}</span>
                 )}
               </button>
             </div>
@@ -878,228 +869,162 @@ export default function StaffArea() {
             </div>
           )}
 
-          {activeTab === "approve-new" && (
+          {activeTab === "approve" && (
             <div className="approve-tab">
-              {lastApproved && (
-                <div className="approval-email-panel">
-                  <div className="approval-email-header">
-                    <span className="approval-email-check">✓</span>
-                    <div>
-                      <strong>"{lastApproved.organization}" is now live.</strong>
-                      <span className="approval-email-sub"> Send the provider their edit link using the email template below.</span>
-                    </div>
-                    <button className="dismiss-btn" onClick={() => setLastApproved(null)}>Dismiss</button>
-                  </div>
-
-                  <div className="approval-email-row">
-                    <label className="approval-email-label">Edit link (private — for this org only)</label>
-                    <div className="approval-email-copy-row">
-                      <code className="approval-email-code">{getEditUrl(lastApproved)}</code>
-                      <button
-                        className="approval-copy-btn"
-                        onClick={() => handleCopy(getEditUrl(lastApproved), "link")}
-                      >
-                        {copiedField === "link" ? "✓ Copied" : "Copy link"}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="approval-email-row">
-                    <label className="approval-email-label">Ready-to-send email — paste into your email client</label>
-                    <textarea
-                      className="approval-email-textarea"
-                      readOnly
-                      rows={18}
-                      value={getEmailTemplate(lastApproved)}
-                    />
-                    <button
-                      className="approval-copy-btn"
-                      onClick={() => handleCopy(getEmailTemplate(lastApproved), "email")}
-                    >
-                      {copiedField === "email" ? "✓ Copied" : "Copy email"}
-                    </button>
-                  </div>
-                </div>
-              )}
-
+              {/* Shared banners */}
               {approveMessage && (
                 <div className="error-banner">
                   {approveMessage}
                   <button onClick={() => setApproveMessage(null)} className="dismiss-btn">Dismiss</button>
                 </div>
               )}
-
               {pendingError && (
                 <div className="error-banner">
                   ⚠️ {pendingError}
                   <button onClick={() => loadPendingApps()} className="dismiss-btn">Retry</button>
                 </div>
               )}
-
               {pendingLoading && (
                 <div className="loading-state">
                   <div className="spinner" />
-                  <p>Loading pending applications...</p>
+                  <p>Loading pending items...</p>
                 </div>
               )}
 
               {!pendingLoading && !pendingError && (
                 <>
-                  <div className="approve-section-header">
-                    <h3 className="remove-section-title">
-                      Pending New Applications
-                      <span className="remove-count">{pendingNewOrgs.length}</span>
-                    </h3>
-                    <p className="remove-section-desc">
-                      These organizations applied to be listed on the Resource Hub. Review each one and click Approve to make them live.
-                    </p>
-                  </div>
-
-                  {pendingNewOrgs.length === 0 ? (
-                    <div className="approve-empty">
-                      <div className="approve-empty-icon">✓</div>
-                      <p>No new applications — you're all caught up!</p>
+                  {/* ── Approve New Organization ── */}
+                  <div className="approve-subsection">
+                    <div className="approve-section-header">
+                      <h3 className="remove-section-title">
+                        Approve New Organization
+                        <span className="remove-count">{pendingNewOrgs.length}</span>
+                      </h3>
+                      <p className="remove-section-desc">
+                        These organizations applied to be listed on the Resource Hub. Review each one and click Approve to make them live on the public hub.
+                      </p>
                     </div>
-                  ) : (
-                    <div className="approve-list">
-                      {pendingNewOrgs.map((r) => (
-                        <div key={r.id} className="approve-row">
-                          <div className="approve-row-info">
-                            <span className="approve-org-name">{r.organization}</span>
-                            <div className="approve-org-meta">
-                              {r.website && (
-                                <a href={r.website} target="_blank" rel="noopener noreferrer" className="approve-meta-link">
-                                  🌐 {r.website}
-                                </a>
-                              )}
-                              {r.primaryContactEmail && (
-                                <span className="approve-meta-item">✉ {r.primaryContactEmail}</span>
-                              )}
-                              {r.contact && (
-                                <span className="approve-meta-item">👤 {r.contact}</span>
-                              )}
-                            </div>
-                            {r.notes && (
-                              <p className="approve-org-notes">{r.notes}</p>
-                            )}
+
+                    {lastApproved && (
+                      <div className="approval-email-panel">
+                        <div className="approval-email-header">
+                          <span className="approval-email-check">✓</span>
+                          <div>
+                            <strong>"{lastApproved.organization}" is now live.</strong>
+                            <span className="approval-email-sub"> Send the provider their edit link using the email template below.</span>
                           </div>
-                          <div className="approve-row-actions">
-                            <button
-                              className="approve-btn"
-                              disabled={actionInProgress === r.id}
-                              onClick={() => handleApprove(r)}
-                            >
-                              {actionInProgress === r.id ? "Approving..." : "✓ Approve"}
+                          <button className="dismiss-btn" onClick={() => setLastApproved(null)}>Dismiss</button>
+                        </div>
+                        <div className="approval-email-row">
+                          <label className="approval-email-label">Edit link (private — for this org only)</label>
+                          <div className="approval-email-copy-row">
+                            <code className="approval-email-code">{getEditUrl(lastApproved)}</code>
+                            <button className="approval-copy-btn" onClick={() => handleCopy(getEditUrl(lastApproved), "link")}>
+                              {copiedField === "link" ? "✓ Copied" : "Copy link"}
                             </button>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+                        <div className="approval-email-row">
+                          <label className="approval-email-label">Ready-to-send email — paste into your email client</label>
+                          <textarea className="approval-email-textarea" readOnly rows={18} value={getEmailTemplate(lastApproved)} />
+                          <button className="approval-copy-btn" onClick={() => handleCopy(getEmailTemplate(lastApproved), "email")}>
+                            {copiedField === "email" ? "✓ Copied" : "Copy email"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
-          {activeTab === "approve-edit" && (
-            <div className="approve-tab">
-              {lastApprovedEdit && (
-                <div className="approval-email-panel">
-                  <div className="approval-email-header">
-                    <span className="approval-email-check">✓</span>
-                    <div>
-                      <strong>Edit approved — "{lastApprovedEdit.organization}" is now live with updated info.</strong>
-                      <span className="approval-email-sub"> Please remove or hide the original listing using the Remove tab or directly in Airtable.</span>
-                    </div>
-                    <button className="dismiss-btn" onClick={() => setLastApprovedEdit(null)}>Dismiss</button>
-                  </div>
-                </div>
-              )}
-
-              {approveMessage && (
-                <div className="error-banner">
-                  {approveMessage}
-                  <button onClick={() => setApproveMessage(null)} className="dismiss-btn">Dismiss</button>
-                </div>
-              )}
-
-              {pendingError && (
-                <div className="error-banner">
-                  ⚠️ {pendingError}
-                  <button onClick={() => loadPendingApps()} className="dismiss-btn">Retry</button>
-                </div>
-              )}
-
-              {pendingLoading && (
-                <div className="loading-state">
-                  <div className="spinner" />
-                  <p>Loading edit requests...</p>
-                </div>
-              )}
-
-              {!pendingLoading && !pendingError && (
-                <>
-                  <div className="approve-section-header">
-                    <h3 className="remove-section-title">
-                      Pending Edit Requests
-                      <span className="remove-count">{pendingEditRequests.length}</span>
-                    </h3>
-                    <p className="remove-section-desc">
-                      These organizations submitted updates to their existing listing. Review the changes and click Approve to make the updated info live. After approving, remove the original listing via the Remove tab.
-                    </p>
-                  </div>
-
-                  {pendingEditRequests.length === 0 ? (
-                    <div className="approve-empty">
-                      <div className="approve-empty-icon">✓</div>
-                      <p>No pending edit requests — you're all caught up!</p>
-                    </div>
-                  ) : (
-                    <div className="approve-list">
-                      {pendingEditRequests.map((r) => {
-                        // Strip the "EDIT REQUEST for: [name] | " prefix to show clean notes
-                        const notesBody = r.notes?.replace(/^EDIT REQUEST for:[^|]+\|\s*/, "") || "";
-                        const originalName = r.notes?.match(/^EDIT REQUEST for:\s*([^|]+)\s*\|/)?.[1]?.trim() || "";
-                        return (
+                    {pendingNewOrgs.length === 0 ? (
+                      <div className="approve-empty">
+                        <div className="approve-empty-icon">✓</div>
+                        <p>No new applications — you're all caught up!</p>
+                      </div>
+                    ) : (
+                      <div className="approve-list">
+                        {pendingNewOrgs.map((r) => (
                           <div key={r.id} className="approve-row">
                             <div className="approve-row-info">
                               <span className="approve-org-name">{r.organization}</span>
-                              {originalName && originalName !== r.organization && (
-                                <span className="approve-meta-item" style={{ fontStyle: "italic", color: "var(--avalon-warm-gray)" }}>
-                                  Edit request for: {originalName}
-                                </span>
-                              )}
                               <div className="approve-org-meta">
-                                {r.website && (
-                                  <a href={r.website} target="_blank" rel="noopener noreferrer" className="approve-meta-link">
-                                    🌐 {r.website}
-                                  </a>
-                                )}
-                                {r.primaryContactEmail && (
-                                  <span className="approve-meta-item">✉ {r.primaryContactEmail}</span>
-                                )}
-                                {r.contact && (
-                                  <span className="approve-meta-item">👤 {r.contact}</span>
-                                )}
+                                {r.website && <a href={r.website} target="_blank" rel="noopener noreferrer" className="approve-meta-link">🌐 {r.website}</a>}
+                                {r.primaryContactEmail && <span className="approve-meta-item">✉ {r.primaryContactEmail}</span>}
+                                {r.contact && <span className="approve-meta-item">👤 {r.contact}</span>}
                               </div>
-                              {notesBody && (
-                                <p className="approve-org-notes">{notesBody}</p>
-                              )}
+                              {r.notes && <p className="approve-org-notes">{r.notes}</p>}
                             </div>
                             <div className="approve-row-actions">
-                              <button
-                                className="approve-btn"
-                                disabled={actionInProgress === r.id}
-                                onClick={() => handleApproveEdit(r)}
-                              >
-                                {actionInProgress === r.id ? "Approving..." : "✓ Approve Edit"}
+                              <button className="approve-btn" disabled={actionInProgress === r.id} onClick={() => handleApprove(r)}>
+                                {actionInProgress === r.id ? "Approving..." : "✓ Approve"}
                               </button>
                             </div>
                           </div>
-                        );
-                      })}
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Approve Edit Request ── */}
+                  <div className="approve-subsection">
+                    <div className="approve-section-header">
+                      <h3 className="remove-section-title">
+                        Approve Edit Request
+                        <span className="remove-count">{pendingEditRequests.length}</span>
+                      </h3>
+                      <p className="remove-section-desc">
+                        These organizations submitted updates to their existing listing. Review the changes and click Approve to make the updated info live. After approving, remove the original listing via the Remove tab.
+                      </p>
                     </div>
-                  )}
+
+                    {lastApprovedEdit && (
+                      <div className="approval-email-panel">
+                        <div className="approval-email-header">
+                          <span className="approval-email-check">✓</span>
+                          <div>
+                            <strong>Edit approved — "{lastApprovedEdit.organization}" is now live with updated info.</strong>
+                            <span className="approval-email-sub"> Please remove or hide the original listing using the Remove tab or directly in Airtable.</span>
+                          </div>
+                          <button className="dismiss-btn" onClick={() => setLastApprovedEdit(null)}>Dismiss</button>
+                        </div>
+                      </div>
+                    )}
+
+                    {pendingEditRequests.length === 0 ? (
+                      <div className="approve-empty">
+                        <div className="approve-empty-icon">✓</div>
+                        <p>No pending edit requests — you're all caught up!</p>
+                      </div>
+                    ) : (
+                      <div className="approve-list">
+                        {pendingEditRequests.map((r) => {
+                          const notesBody = r.notes?.replace(/^EDIT REQUEST for:[^|]+\|\s*/, "") || "";
+                          const originalName = r.notes?.match(/^EDIT REQUEST for:\s*([^|]+)\s*\|/)?.[1]?.trim() || "";
+                          return (
+                            <div key={r.id} className="approve-row">
+                              <div className="approve-row-info">
+                                <span className="approve-org-name">{r.organization}</span>
+                                {originalName && originalName !== r.organization && (
+                                  <span className="approve-meta-item" style={{ fontStyle: "italic", color: "var(--avalon-warm-gray)" }}>
+                                    Edit request for: {originalName}
+                                  </span>
+                                )}
+                                <div className="approve-org-meta">
+                                  {r.website && <a href={r.website} target="_blank" rel="noopener noreferrer" className="approve-meta-link">🌐 {r.website}</a>}
+                                  {r.primaryContactEmail && <span className="approve-meta-item">✉ {r.primaryContactEmail}</span>}
+                                  {r.contact && <span className="approve-meta-item">👤 {r.contact}</span>}
+                                </div>
+                                {notesBody && <p className="approve-org-notes">{notesBody}</p>}
+                              </div>
+                              <div className="approve-row-actions">
+                                <button className="approve-btn" disabled={actionInProgress === r.id} onClick={() => handleApproveEdit(r)}>
+                                  {actionInProgress === r.id ? "Approving..." : "✓ Approve Edit"}
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </div>
