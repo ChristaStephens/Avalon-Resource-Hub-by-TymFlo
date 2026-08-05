@@ -181,7 +181,12 @@ export default function StaffArea() {
     try {
       // Approve the record in-place — the edit request IS the original record,
       // patched with new data and set back to unapproved. Approving re-publishes it.
-      await approveResource(resource);
+      // Also strip the "EDIT REQUEST for: … | " prefix so it doesn't appear publicly.
+      const cleanedNotes = resource.notes?.replace(/^EDIT REQUEST for:[^|]+\|\s*/, "") ?? "";
+      await updateResource(resource.id, {
+        "Approved by Avalon Admin": true,
+        NOTES: cleanedNotes,
+      });
 
       setLastApprovedEdit(resource);
       await loadPendingApps();
