@@ -179,7 +179,24 @@ export default function StaffArea() {
     setApproveMessage(null);
     setLastApprovedEdit(null);
     try {
+      // 1. Approve the edit-request record (makes updated info live)
       await approveResource(resource);
+
+      // 2. Auto-remove the original listing so it doesn't stay live alongside the new one.
+      //    The original org name is embedded in the NOTES prefix:
+      //    "EDIT REQUEST for: [original name] | ..."
+      const originalName = resource.notes?.match(/^EDIT REQUEST for:\s*([^|]+)\s*\|/)?.[1]?.trim();
+      if (originalName) {
+        const allResources = await fetchAllResources(true);
+        // Find an approved, non-removed, non-edit-request record with matching org name
+        const original = allResources.find(
+          (r) => r.organization === originalName && !r.removed && !r.isEditRequest && r.id !== resource.id
+        );
+        if (original) {
+          await removeResource(original);
+        }
+      }
+
       setLastApprovedEdit(resource);
       await loadPendingApps();
     } catch (err) {
@@ -971,7 +988,7 @@ export default function StaffArea() {
                         <span className="remove-count">{pendingEditRequests.length}</span>
                       </h3>
                       <p className="remove-section-desc">
-                        These organizations submitted updates to their existing listing. Review the changes and click Approve to make the updated info live. After approving, remove the original listing via the Remove tab.
+                        These organizations submitted updates to their existing listing. Review the changes and click Approve to make the updated info live. The original listing will be hidden automatically.
                       </p>
                     </div>
 
@@ -981,7 +998,7 @@ export default function StaffArea() {
                           <span className="approval-email-check">✓</span>
                           <div>
                             <strong>Edit approved — "{lastApprovedEdit.organization}" is now live with updated info.</strong>
-                            <span className="approval-email-sub"> Please remove or hide the original listing using the Remove tab or directly in Airtable.</span>
+                            <span className="approval-email-sub"> The original listing has been automatically hidden from the public hub.</span>
                           </div>
                           <button className="dismiss-btn" onClick={() => setLastApprovedEdit(null)}>Dismiss</button>
                         </div>
