@@ -106,6 +106,10 @@
     .video-banner-text p { color: rgba(255,255,255,0.75); font-size: 13px; margin: 0; }
     .video-banner-arrow { color: white; font-size: 26px; font-weight: 700; flex-shrink: 0; }
 
+    /* Sub-section badge */
+    .sub-badge { display: inline-block; background: #e8f5f3; color: #1a7a72; border-radius: 6px; padding: 2px 10px; font-size: 12px; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .sub-section { border: 1px solid #e4e0dc; border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+
     /* Footer */
     .guide-footer { text-align: center; color: #9a9490; font-size: 12px; margin-top: 40px; padding-top: 24px; border-top: 1px solid #e4e0dc; }
 
@@ -146,7 +150,7 @@
       <div class="video-play-circle">▶</div>
       <div class="video-banner-text">
         <h3>Watch the Video Walkthrough</h3>
-        <p>A short animated tour of the Resource Hub — public view, staff login, adding and removing resources.</p>
+        <p>A short animated tour of the Resource Hub — public view, staff login, all four staff tools.</p>
       </div>
     </div>
     <div class="video-banner-arrow">→</div>
@@ -160,8 +164,10 @@
       <li><a href="#s2">The Public View — What Clients See</a></li>
       <li><a href="#s3">Logging In to the Staff Area</a></li>
       <li><a href="#s4">Adding a New Organization</a></li>
-      <li><a href="#s5">Removing or Restoring an Organization</a></li>
-      <li><a href="#s6">Quick Reference &amp; Tips</a></li>
+      <li><a href="#s5">Editing an Organization</a></li>
+      <li><a href="#s6">Approving Applications &amp; Edit Requests</a></li>
+      <li><a href="#s7">Removing or Restoring an Organization</a></li>
+      <li><a href="#s8">Quick Reference &amp; Tips</a></li>
     </ol>
   </div>
 
@@ -171,7 +177,7 @@
     <p>The <strong>Avalon Resource Hub</strong> is a community directory that helps survivors find local health and support organizations. It lives at:</p>
     <div class="tip-box">
       <strong>Live website address</strong>
-      <p><a href="https://christastephens.github.io/Avalon-Resource-Hub-by-TymFlo/" target="_blank" style="color:#1a7a72; font-weight:600;">christastephens.github.io/Avalon-Resource-Hub-by-TymFlo/</a></p>
+      <p><a href="https://avalon.tymflo.com" target="_blank" style="color:#1a7a72; font-weight:600;">avalon.tymflo.com</a></p>
     </div>
     <p>The site has <strong>two areas</strong>:</p>
     <div class="quick-ref">
@@ -181,7 +187,7 @@
       </div>
       <div class="quick-ref-card">
         <h4>🔒 Staff Area</h4>
-        <p>Password-protected. Only Avalon staff can add, remove, or restore organizations in the directory.</p>
+        <p>Password-protected. Only Avalon staff can add, edit, remove, or approve organizations in the directory.</p>
       </div>
     </div>
     <p>All resource information is stored in <strong>Airtable</strong>. When staff make a change in the Hub, it updates Airtable immediately. The public view refreshes automatically.</p>
@@ -211,9 +217,13 @@
       <li style="margin-bottom: 6px;">Cost badge (e.g., "Free – No costs")</li>
       <li style="margin-bottom: 6px;">Services offered as small tags</li>
       <li style="margin-bottom: 6px;">Notes / description</li>
-      <li style="margin-bottom: 6px;">Contact name and email</li>
+      <li style="margin-bottom: 6px;">"Click to see full details" — opens a modal with complete information</li>
       <li style="margin-bottom: 6px;">"Visit Website" button linking to the organization's site</li>
     </ul>
+
+    <h3>Provider Self-Service: "Request an Update"</h3>
+    <p>At the bottom of each organization's detail modal, there is a discreet link: <strong>"Is this your organization? Request an update to this listing →"</strong></p>
+    <p>This lets providers submit corrections to their own listing. The request goes to Avalon staff for review — nothing changes publicly until a staff member approves it. Approved edit requests appear on the <strong>Approve Organizations</strong> tab (see Section 6).</p>
 
     <div class="tip-box">
       <strong>Good to know</strong>
@@ -228,7 +238,7 @@
 
     <h3>How to Access the Staff Area</h3>
     <ul class="steps">
-      <li><p>Visit the Resource Hub at the website address above, or click the <strong>"Staff Access"</strong> button in the top navigation bar (desktop) or at the bottom of the page (mobile).</p></li>
+      <li><p>Visit <a href="https://avalon.tymflo.com" target="_blank" style="color:#1a7a72;">avalon.tymflo.com</a>, then click the <strong>"Staff Access"</strong> button in the top navigation bar (desktop) or at the bottom of the page (mobile).</p></li>
       <li><p>You will see the <strong>Staff Access login screen</strong> shown below.</p></li>
       <li><p>Type the staff password into the box and click <strong>"Access Staff Area."</strong></p></li>
       <li><p>If the password is correct, you will be taken directly into the staff dashboard.</p></li>
@@ -251,21 +261,33 @@
 
     <h3>Logging Out</h3>
     <p>When you are finished, click <strong>"Log Out"</strong> at the top-right of the Staff Area, or simply close the browser tab. Your session is not stored — the next person who opens the page will need to log in again.</p>
+
+    <h3>The Four Staff Tabs</h3>
+    <p>Once logged in, you will see four tabs across the top of the Staff Area:</p>
+    <table class="field-table">
+      <thead><tr><th>Tab</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><strong>+ Add Organization</strong></td><td>Create a brand-new listing from scratch</td></tr>
+        <tr><td><strong>✎ Edit Organization</strong></td><td>Update an existing listing's information</td></tr>
+        <tr><td><strong>Remove Organization</strong></td><td>Hide or restore a listing from the public view</td></tr>
+        <tr><td><strong>✓ Approve Organizations</strong></td><td>Review and approve new provider applications and edit requests — shows a live badge count of pending items</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- SECTION 4 -->
   <div class="section" id="s4">
     <h2><span class="section-num">4</span> Adding a New Organization</h2>
-    <p>Once you are logged in, you will land on the <strong>"Add Organization"</strong> tab. This is where you create a new resource listing.</p>
+    <p>Use this tab when you want to add a resource that has already been vetted by Avalon staff.</p>
 
     <h3>Step-by-Step: Adding an Organization</h3>
     <ul class="steps">
-      <li><p>Make sure you are on the <strong>"Add Organization"</strong> tab (it is the default when you first log in).</p></li>
-      <li><p>Fill in the organization details using the form. Fields marked with a <span class="required">*</span> red star are <strong>required</strong> — the form will not submit without them.</p></li>
+      <li><p>Make sure you are on the <strong>"+ Add Organization"</strong> tab (it is the default when you first log in).</p></li>
+      <li><p>Fill in the organization details. Fields marked with a <span class="required">*</span> red star are <strong>required</strong>.</p></li>
       <li><p>Under <strong>"Support Options,"</strong> check all the services this organization provides. You must select at least one.</p></li>
-      <li><p>Check the <strong>"Approved by Avalon"</strong> checkbox to confirm this organization has been vetted. This is required before the listing goes live.</p></li>
-      <li><p>Click the <strong>"Add Organization"</strong> button at the bottom of the form.</p></li>
-      <li><p>A green confirmation message will appear: <em>"Organization added successfully!"</em> The new resource will appear in the public hub within a minute or two.</p></li>
+      <li><p>Check the <strong>"Approved by Avalon"</strong> checkbox to confirm this organization has been vetted.</p></li>
+      <li><p>Optionally upload a <strong>logo image</strong> — PNG or JPG, ideally square.</p></li>
+      <li><p>Click <strong>"Add Organization."</strong> A green confirmation message will appear and the listing will be live within a minute.</p></li>
     </ul>
 
     <h3>Form Fields Reference</h3>
@@ -274,16 +296,17 @@
         <tr><th>Field</th><th>Description</th><th>Required?</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>Organization Name</strong></td><td>The full name of the organization as it will appear publicly</td><td><span class="required">Required</span></td></tr>
-        <tr><td><strong>Website</strong></td><td>Full URL starting with https:// (e.g., https://example.org)</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Organization Name</strong></td><td>Full name as it will appear publicly</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Website</strong></td><td>Full URL starting with https://</td><td><span class="required">Required</span></td></tr>
         <tr><td><strong>Primary Email</strong></td><td>Main contact email for this organization</td><td><span class="required">Required</span></td></tr>
         <tr><td><strong>Contact Person</strong></td><td>Name of the main contact at the organization</td><td><span class="optional">Optional</span></td></tr>
-        <tr><td><strong>Phone</strong></td><td>Organization phone number</td><td><span class="optional">Optional</span></td></tr>
-        <tr><td><strong>Cost Structure</strong></td><td>How costs work: Free, Insurance Based, Sliding Scale, etc.</td><td><span class="required">Required</span></td></tr>
-        <tr><td><strong>Accepts Uninsured</strong></td><td>Check if they serve clients without insurance</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Secondary Email</strong></td><td>Additional contact email</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Cost Structure</strong></td><td>How costs work — select all that apply</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Accepts Uninsured</strong></td><td>Whether they serve clients without insurance</td><td><span class="optional">Optional</span></td></tr>
         <tr><td><strong>Support Options</strong></td><td>Services provided — check all that apply</td><td><span class="required">At least 1</span></td></tr>
         <tr><td><strong>Notes</strong></td><td>Any additional helpful information for clients</td><td><span class="optional">Optional</span></td></tr>
-        <tr><td><strong>Approved by Avalon</strong></td><td>Confirms this resource has been reviewed by Avalon staff</td><td><span class="required">Required</span></td></tr>
+        <tr><td><strong>Logo</strong></td><td>Organization logo image (PNG or JPG)</td><td><span class="optional">Optional</span></td></tr>
+        <tr><td><strong>Approved by Avalon</strong></td><td>Confirms this resource has been reviewed by staff</td><td><span class="required">Required</span></td></tr>
       </tbody>
     </table>
 
@@ -293,22 +316,91 @@
     </div>
   </div>
 
-  <!-- SECTION 5 -->
+  <!-- SECTION 5 — NEW -->
   <div class="section" id="s5">
-    <h2><span class="section-num">5</span> Removing or Restoring an Organization</h2>
+    <h2><span class="section-num">5</span> Editing an Organization</h2>
+    <p>Use the <strong>Edit Organization</strong> tab to correct or update information on an existing listing — for example, a new phone number, updated website, or changed services.</p>
+
+    <h3>Step-by-Step: Editing an Organization</h3>
+    <ul class="steps">
+      <li><p>Log in and click the <strong>"✎ Edit Organization"</strong> tab.</p></li>
+      <li><p>A list of all active organizations appears. Use the search box to find the one you want to edit.</p></li>
+      <li><p>Click <strong>"Edit"</strong> on that organization's card. The form will open, pre-filled with all the current information.</p></li>
+      <li><p>Make any changes needed — you can update any field including support options, costs, notes, and contact details.</p></li>
+      <li><p>Click <strong>"Save Changes."</strong> A green confirmation will appear and the changes go live immediately.</p></li>
+    </ul>
+
+    <div class="tip-box">
+      <strong>Changes are instant</strong>
+      <p>Unlike adding a new organization, edits made by staff go live right away — no approval step needed. The Airtable record is updated immediately.</p>
+    </div>
+
+    <div class="warning-box">
+      <strong>Different from a provider edit request</strong>
+      <p>When a <em>provider</em> submits a "Request an Update" from the public site, it does NOT go live automatically — it comes to the Approve tab for your review first. Only edits made by <em>logged-in staff</em> in this tab go live immediately.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6 — NEW -->
+  <div class="section" id="s6">
+    <h2><span class="section-num">6</span> Approving Applications &amp; Edit Requests</h2>
+    <p>The <strong>✓ Approve Organizations</strong> tab is your review queue. It shows two types of pending items, each in its own sub-section. A badge on the tab tells you how many items are waiting — it updates as soon as you log in.</p>
+
+    <div class="sub-section">
+      <span class="sub-badge">New Applications</span>
+      <h3 style="margin-top:8px;">Approve New Organization</h3>
+      <p>When a provider fills out the <strong>"Become a Resource Provider"</strong> form on the public site, their submission lands here as an unapproved record. It is not visible to the public until you approve it.</p>
+
+      <h3>How to approve a new application</h3>
+      <ul class="steps">
+        <li><p>Click the <strong>"✓ Approve Organizations"</strong> tab.</p></li>
+        <li><p>Under <strong>"Approve New Organization,"</strong> review the details on each card — name, website, email, contact, and services.</p></li>
+        <li><p>If the organization is appropriate for the directory, click <strong>"✓ Approve."</strong> It will go live on the public hub immediately.</p></li>
+        <li><p>If it is not appropriate, you can leave it (it stays hidden) or remove it using the Remove tab.</p></li>
+      </ul>
+    </div>
+
+    <div class="sub-section">
+      <span class="sub-badge">Edit Requests</span>
+      <h3 style="margin-top:8px;">Approve Edit Request</h3>
+      <p>When a provider clicks <strong>"Is this your organization? Request an update →"</strong> on their listing and submits a change, that listing is temporarily hidden from the public and placed here for your review.</p>
+
+      <h3>How to approve an edit request</h3>
+      <ul class="steps">
+        <li><p>Under <strong>"Approve Edit Request,"</strong> review the updated information the provider submitted.</p></li>
+        <li><p>Compare the proposed changes with what you know about the organization.</p></li>
+        <li><p>If the changes look correct, click <strong>"✓ Approve."</strong> The updated listing goes live immediately and the "EDIT REQUEST" marker is removed from the Notes field automatically.</p></li>
+        <li><p>If the changes look wrong or suspicious, do not approve. Contact the organization directly to verify before approving.</p></li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>Listing is hidden while pending</strong>
+        <p>When a provider submits an edit request, their listing is temporarily unpublished until you approve it. Try to review edit requests promptly so the organization does not stay off the public hub for long.</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Badge count</strong>
+      <p>The number on the Approve tab (e.g., <strong>✓ Approve Organizations 2</strong>) shows the total of new applications plus edit requests waiting for review. It appears as soon as you log in — you don't need to click the tab first.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7 (was 5) -->
+  <div class="section" id="s7">
+    <h2><span class="section-num">7</span> Removing or Restoring an Organization</h2>
     <p>If an organization is no longer appropriate for the directory, you can <strong>remove</strong> it from the public view. It is never permanently deleted — you can always <strong>restore</strong> it later.</p>
 
     <h3>Step-by-Step: Removing an Organization</h3>
     <ul class="steps">
-      <li><p>After logging in, click the <strong>"Remove / Restore Organizations"</strong> tab at the top of the Staff Area.</p></li>
+      <li><p>After logging in, click the <strong>"Remove Organization"</strong> tab at the top of the Staff Area.</p></li>
       <li><p>The tab will load all current resources. Scroll to find the organization you want to remove.</p></li>
-      <li><p>Click the <strong>red "Remove"</strong> button on the organization's card. A confirmation prompt will appear asking you to confirm.</p></li>
+      <li><p>Click the <strong>red "Remove"</strong> button on the organization's card. A confirmation prompt will appear.</p></li>
       <li><p>Click <strong>"Yes, Remove"</strong> to confirm. The organization will immediately disappear from the public view.</p></li>
     </ul>
 
     <h3>Step-by-Step: Restoring a Removed Organization</h3>
     <ul class="steps">
-      <li><p>On the same <strong>"Remove / Restore"</strong> tab, removed organizations are shown with a gray <em>"Removed"</em> badge.</p></li>
+      <li><p>On the same <strong>"Remove Organization"</strong> tab, removed organizations are shown with a gray <em>"Hidden"</em> badge.</p></li>
       <li><p>Find the organization you want to bring back and click the <strong>green "Restore"</strong> button.</p></li>
       <li><p>The organization will reappear in the public hub immediately.</p></li>
     </ul>
@@ -324,27 +416,35 @@
     </div>
   </div>
 
-  <!-- SECTION 6 -->
-  <div class="section" id="s6">
-    <h2><span class="section-num">6</span> Quick Reference &amp; Tips</h2>
+  <!-- SECTION 8 (was 6) -->
+  <div class="section" id="s8">
+    <h2><span class="section-num">8</span> Quick Reference &amp; Tips</h2>
 
     <h3>At a Glance</h3>
     <div class="quick-ref">
       <div class="quick-ref-card">
         <h4>To add a new resource</h4>
-        <p>Staff Access → Log In → "Add Organization" tab → Fill form → Submit</p>
+        <p>Staff Access → Log In → "+ Add Organization" tab → Fill form → Submit</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To edit an existing resource</h4>
+        <p>Staff Access → Log In → "✎ Edit Organization" tab → Find org → Edit → Save Changes</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To approve a new application</h4>
+        <p>Staff Access → Log In → "✓ Approve Organizations" tab → Review → Approve</p>
+      </div>
+      <div class="quick-ref-card">
+        <h4>To approve an edit request</h4>
+        <p>Staff Access → Log In → "✓ Approve Organizations" tab → "Approve Edit Request" section → Review → Approve</p>
       </div>
       <div class="quick-ref-card">
         <h4>To remove a resource</h4>
-        <p>Staff Access → Log In → "Remove / Restore" tab → Click Remove → Confirm</p>
+        <p>Staff Access → Log In → "Remove Organization" tab → Click Remove → Confirm</p>
       </div>
       <div class="quick-ref-card">
         <h4>To restore a resource</h4>
-        <p>Staff Access → Log In → "Remove / Restore" tab → Find removed item → Click Restore</p>
-      </div>
-      <div class="quick-ref-card">
-        <h4>To go back to the main site</h4>
-        <p>Click <strong>"← Back to Avalon"</strong> in the header or footer, or visit <a href="https://avalonhealing.org" target="_blank" style="color:#1a7a72;">avalonhealing.org</a></p>
+        <p>Staff Access → Log In → "Remove Organization" tab → Find hidden item → Click Restore</p>
       </div>
     </div>
 
@@ -354,10 +454,13 @@
     <p>The public view caches resources for up to 60 seconds to keep loading fast. Wait one minute and refresh the page — it will appear.</p>
 
     <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: The form won't let me submit. What's wrong?</h3>
-    <p>Check that all required fields (marked with a red <span class="required">*</span>) are filled in, at least one Support Option is checked, and the "Approved by Avalon" checkbox is checked.</p>
+    <p>Check that all required fields (marked with a red <span class="required">*</span>) are filled in and at least one Support Option is checked.</p>
 
-    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: Can I edit an organization's information after adding it?</h3>
-    <p>Edits can be made directly in <strong>Airtable</strong>. Log in to Airtable, find the record, and update the fields. Changes appear on the Resource Hub within 60 seconds.</p>
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: How do I edit an organization's information?</h3>
+    <p>Use the <strong>"✎ Edit Organization"</strong> tab in the Staff Area. Find the organization, click Edit, make your changes, and click Save Changes. The update goes live immediately — no need to log in to Airtable directly.</p>
+
+    <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: A provider submitted an edit request. Where do I find it?</h3>
+    <p>Go to the <strong>"✓ Approve Organizations"</strong> tab and look under the <strong>"Approve Edit Request"</strong> sub-section. Review the proposed changes and click Approve to make them live. The organization's listing is hidden from the public until you approve it, so try to review promptly.</p>
 
     <h3 style="margin-top:16px; color:#4a4a4a; font-size:15px;">Q: Can I use this on my phone?</h3>
     <p>Yes. The Resource Hub and Staff Area work on mobile browsers. Use the "Staff Access" button in the footer to log in from a phone.</p>
@@ -368,7 +471,7 @@
     <div class="tip-box" style="margin-top:28px;">
       <strong>Support Types Reference</strong>
       <p>
-        <span class="tag">STI Testing</span><span class="tag">HIV Testing</span><span class="tag">Pregnancy Tests</span><span class="tag">Pregnancy Confirmations</span><span class="tag">Contraception</span><span class="tag">Ultrasounds</span><span class="tag">Live Birth</span><span class="tag">Grief/Loss</span><span class="tag">Undocumented</span><span class="tag">Termination</span><span class="tag">Chronic Care</span><span class="tag">Dental</span><span class="tag">Behavioral</span><span class="tag">Uninsured</span><span class="tag">Transporation</span>
+        <span class="tag">STI Testing</span><span class="tag">HIV Testing</span><span class="tag">Pregnancy Tests</span><span class="tag">Pregnancy Confirmations</span><span class="tag">Contraception</span><span class="tag">Ultrasounds</span><span class="tag">Live Birth</span><span class="tag">Grief/Loss</span><span class="tag">Undocumented</span><span class="tag">Termination</span><span class="tag">Chronic Care</span><span class="tag">Dental</span><span class="tag">Behavioral</span><span class="tag">Uninsured</span><span class="tag">Transportation</span><span class="tag">Childbirth Education</span><span class="tag">Fetal Care Services</span><span class="tag">Diagnostic Ultrasound</span><span class="tag">Motherhood Support</span><span class="tag">Black Provider</span><span class="tag">Abortion Support</span><span class="tag">Trauma-Informed</span>
       </p>
     </div>
   </div>
