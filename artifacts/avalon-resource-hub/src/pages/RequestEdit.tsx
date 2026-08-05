@@ -8,11 +8,11 @@ import { fetchResources, createResource, AIRTABLE_CONFIGURED, Resource } from "@
 const NOTIFY_ENDPOINT = "/api/notify";
 
 const COST_OPTIONS = [
-  "Free - No costs ",
-  "Free prenatal care; insurance billed for well person gyn ",
+  "Free - No costs",
+  "Free prenatal care; insurance billed for well person gyn",
   "Insurance based",
   "Will help with insurance sign up",
-  "Offers - Free prenatals ",
+  "Offers - Free prenatals",
   "Based on EGA - Financial Assistance Available",
 ];
 
