@@ -8,12 +8,14 @@ import { createResource, uploadLogoAttachment, AIRTABLE_CONFIGURED } from "@/lib
 const NOTIFY_ENDPOINT = "/api/notify";
 
 
+// Values must match Airtable's stored multi-select options exactly (including trailing spaces).
+// Labels in the UI are rendered with .trim() — see the JSX below.
 const COST_OPTIONS = [
-  "Free - No costs",
-  "Free prenatal care; insurance billed for well person gyn",
+  "Free - No costs ",
+  "Free prenatal care; insurance billed for well person gyn ",
   "Insurance based",
   "Will help with insurance sign up",
-  "Offers - Free prenatals",
+  "Offers - Free prenatals ",
   "Based on EGA - Financial Assistance Available",
 ];
 
