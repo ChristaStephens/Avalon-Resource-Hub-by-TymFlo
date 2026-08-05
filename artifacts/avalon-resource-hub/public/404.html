@@ -4,20 +4,25 @@
     <meta charset="utf-8" />
     <title>Avalon Resource Hub</title>
     <script>
-      // GitHub Pages SPA redirect — preserves the path so wouter routing works.
-      // When GitHub Pages 404s on /staff, this page redirects to /?/staff
-      // and index.html restores it via history.replaceState.
+      // GitHub Pages SPA redirect for a root-mounted custom domain (avalon.tymflo.com).
+      //
+      // When GitHub Pages 404s on e.g. /request-edit?id=rec123 it serves this
+      // file. We redirect to /?/request-edit&id=rec123 so that the root
+      // index.html (which GitHub Pages CAN serve) loads and restores the
+      // original path via history.replaceState before React/wouter boots.
+      //
+      // Root-mount means base is always "", NOT the first path segment.
+      // Using the first path segment as base (the old code) caused an infinite
+      // redirect loop because /request-edit/?/ is also a 404.
       (function () {
         var l = window.location;
-        var base = l.pathname.split("/").slice(0, 2).join("/");
         l.replace(
           l.protocol +
             "//" +
             l.hostname +
             (l.port ? ":" + l.port : "") +
-            base +
             "/?/" +
-            l.pathname.slice(base.length + 1).replace(/&/g, "~and~") +
+            l.pathname.slice(1).replace(/&/g, "~and~") +
             (l.search
               ? "&" + l.search.slice(1).replace(/&/g, "~and~")
               : "") +
