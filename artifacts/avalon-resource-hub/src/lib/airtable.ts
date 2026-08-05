@@ -137,7 +137,7 @@ function parseRecord(record: Record<string, unknown>): Resource {
 async function fetchAll(): Promise<Resource[]> {
   if (!BASE_ID || !PAT) return [];
 
-  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?pageSize=100`;
+  const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?pageSize=100&sort[0][field]=Organization&sort[0][direction]=asc`;
   const allRecords: Resource[] = [];
   let offset: string | undefined;
 

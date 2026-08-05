@@ -272,13 +272,16 @@ export default function StaffArea() {
     }
   };
 
+  // Load pending count as soon as the user authenticates so the badge is visible immediately.
   useEffect(() => {
-    if (authenticated && (activeTab === "remove" || activeTab === "edit")) {
-      loadResources();
-    }
-    if (authenticated && activeTab === "approve") {
-      loadPendingApps();
-    }
+    if (authenticated) loadPendingApps();
+  }, [authenticated]);
+
+  // Also refresh tab-specific data whenever the active tab changes.
+  useEffect(() => {
+    if (!authenticated) return;
+    if (activeTab === "remove" || activeTab === "edit") loadResources();
+    if (activeTab === "approve") loadPendingApps();
   }, [authenticated, activeTab]);
 
   const handleSupportToggle = (opt: string) => {
