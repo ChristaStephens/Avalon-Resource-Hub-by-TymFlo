@@ -137,6 +137,16 @@ export function ResourceModal({ resource, onClose }: ResourceModalProps) {
             </button>
           </div>
         )}
+
+        {/* Provider edit request — intentionally subtle, not for survivors */}
+        <div className="modal-edit-request">
+          <a
+            href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/request-edit?id=${encodeURIComponent(resource.id)}`}
+            className="modal-request-edit-link"
+          >
+            Is this your organization? Request an update →
+          </a>
+        </div>
       </div>
     </div>
   );
