@@ -110,6 +110,13 @@ export default function RequestEdit() {
       const notesPrefix = `EDIT REQUEST for: ${resource?.organization || form.organization} | `;
       const notesValue = notesPrefix + (form.notes || "");
 
+      // Normalize each cost value to the canonical COST_OPTIONS string (which exactly
+      // matches Airtable's stored option names, including any trailing spaces).
+      // This guards against any state path that might have produced a trimmed value.
+      const normalizedCosts = form.costs.map(
+        (c) => COST_OPTIONS.find((o) => o.trim() === c.trim()) ?? c
+      );
+
       const payload: Record<string, unknown> = {
         Organization: form.organization,
         Contact: form.contact,
@@ -117,7 +124,7 @@ export default function RequestEdit() {
         "Primary Contact Email": form.primaryEmail,
         "Secondary Contact Email": form.secondaryEmail,
         "Support Options": form.supportOptions,
-        Costs: form.costs,
+        Costs: normalizedCosts,
         Uninsured: form.uninsured,
         "Approved by Avalon Admin": false,
         NOTES: notesValue,
