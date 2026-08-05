@@ -179,23 +179,9 @@ export default function StaffArea() {
     setApproveMessage(null);
     setLastApprovedEdit(null);
     try {
-      // 1. Approve the edit-request record (makes updated info live)
+      // Approve the record in-place — the edit request IS the original record,
+      // patched with new data and set back to unapproved. Approving re-publishes it.
       await approveResource(resource);
-
-      // 2. Auto-remove the original listing so it doesn't stay live alongside the new one.
-      //    The original org name is embedded in the NOTES prefix:
-      //    "EDIT REQUEST for: [original name] | ..."
-      const originalName = resource.notes?.match(/^EDIT REQUEST for:\s*([^|]+)\s*\|/)?.[1]?.trim();
-      if (originalName) {
-        const allResources = await fetchAllResources(true);
-        // Find an approved, non-removed, non-edit-request record with matching org name
-        const original = allResources.find(
-          (r) => r.organization === originalName && !r.removed && !r.isEditRequest && r.id !== resource.id
-        );
-        if (original) {
-          await removeResource(original);
-        }
-      }
 
       setLastApprovedEdit(resource);
       await loadPendingApps();

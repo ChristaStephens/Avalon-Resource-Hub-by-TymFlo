@@ -3,7 +3,7 @@ import { useLocation, useSearch } from "wouter";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SupportOptionPicker } from "@/components/SupportOptionPicker";
-import { fetchResources, createResource, AIRTABLE_CONFIGURED, Resource } from "@/lib/airtable";
+import { fetchResources, updateResource, AIRTABLE_CONFIGURED, Resource } from "@/lib/airtable";
 
 const NOTIFY_ENDPOINT = "/api/notify";
 
@@ -110,18 +110,18 @@ export default function RequestEdit() {
 
       const payload: Record<string, unknown> = {
         Organization: form.organization,
+        Contact: form.contact,
+        Website: form.website,
+        "Primary Contact Email": form.primaryEmail,
+        "Secondary Contact Email": form.secondaryEmail,
         "Support Options": form.supportOptions,
+        Costs: form.costs,
+        Uninsured: form.uninsured,
         "Approved by Avalon Admin": false,
         NOTES: notesValue,
       };
-      if (form.contact) payload["Contact"] = form.contact;
-      if (form.website) payload["Website"] = form.website;
-      if (form.primaryEmail) payload["Primary Contact Email"] = form.primaryEmail;
-      if (form.secondaryEmail) payload["Secondary Contact Email"] = form.secondaryEmail;
-      if (form.costs.length > 0) payload["Costs"] = form.costs;
-      if (form.uninsured) payload["Uninsured"] = form.uninsured;
 
-      await createResource(payload);
+      await updateResource(recordId, payload);
 
       // Send email notification (gracefully non-blocking)
       await fetch(NOTIFY_ENDPOINT, {
