@@ -413,8 +413,8 @@ export default function StaffArea() {
   }
 
   const activeResources = resources.filter((r) => !r.removed);
-  const pendingNewOrgs = pendingApps.filter((r) => !r.notes?.startsWith("EDIT REQUEST for:"));
-  const pendingEditRequests = pendingApps.filter((r) => r.notes?.startsWith("EDIT REQUEST for:"));
+  const pendingNewOrgs = pendingApps.filter((r) => !r.isEditRequest);
+  const pendingEditRequests = pendingApps.filter((r) => r.isEditRequest);
   const removedResources = resources.filter((r) => r.removed);
 
   return (
