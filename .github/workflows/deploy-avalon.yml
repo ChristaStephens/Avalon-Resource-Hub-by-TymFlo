@@ -36,6 +36,9 @@ jobs:
         with:
           version: "10"
 
+      - name: Disable minimum release age for CI
+        run: echo "minimum-release-age=0" >> .npmrc
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
