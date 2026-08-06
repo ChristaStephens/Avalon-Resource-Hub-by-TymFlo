@@ -37,7 +37,7 @@ jobs:
           version: "10"
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile --ignore-scripts
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build Resource Hub
         run: pnpm --filter @workspace/avalon-resource-hub run build:gh-pages
