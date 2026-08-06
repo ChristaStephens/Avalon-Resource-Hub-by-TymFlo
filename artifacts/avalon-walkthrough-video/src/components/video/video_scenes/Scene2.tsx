@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import screenshot1 from "@/assets/screenshots/guide-resources-loaded.jpg";
+
+const screenshot1 = "/screenshots/guide-resources-loaded.jpg";
 
 export function Scene2() {
   const [phase, setPhase] = useState(0);
