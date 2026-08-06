@@ -47,14 +47,6 @@ jobs:
           VITE_AIRTABLE_TABLE_ID: ${{ vars.VITE_AIRTABLE_TABLE_ID }}
           VITE_STAFF_PASSWORD_HASH: ${{ secrets.VITE_STAFF_PASSWORD_HASH }}
 
-      - name: Build Walkthrough Video
-        run: pnpm --filter @workspace/avalon-walkthrough-video run build:gh-pages
-
-      - name: Merge walkthrough into pages output
-        run: |
-          mkdir -p artifacts/avalon-resource-hub/dist/public/walkthrough
-          cp -r artifacts/avalon-walkthrough-video/dist/gh-pages/. artifacts/avalon-resource-hub/dist/public/walkthrough/
-
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
